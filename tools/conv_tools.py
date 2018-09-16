@@ -21,6 +21,6 @@ def __convolve(src:np.ndarray, kernel:np.ndarray, ind:list) -> np.ndarray:
     if ax == len(kernel.shape):
         return np.sum(subtensor(src, ind, np.array(ind) + np.array(kernel.shape))*kernel)
     return_arr = []
-    for i in range(src.shape[ax]):
+    for i in range(src.shape[ax] - kernel.shape[ax]):
         return_arr.append(__convolve(src, kernel, ind + [i]))
     return np.array(return_arr)
