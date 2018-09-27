@@ -8,8 +8,8 @@ def create_params(shape, factor):
 def get_score(item, frame, bbox, func):
     frametag = func(frame, item)
     f = frametag[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2]]
-
-    return f.sum()/f.size - (frametag.sum() - f.sum())/(frametag.size - f.size) - (0.1*np.abs(item[:,0] - item[:,1]).sum()/3)
+    s = f.sum()
+    return s/f.size - (frametag.sum() - s)/(frametag.size - f.size) - (0.03*np.abs(item[:,0] - item[:,1]).sum())
 
 def create_child(sur, alpha, factor):
     child = np.sign(np.random.rand(*sur[0].shape))* 10**(-alpha * np.random.rand(*sur[0].shape))*factor
