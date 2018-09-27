@@ -25,7 +25,7 @@ def main():
         if k == ord('c'):
             cv2.destroyAllWindows()
             break
-    params, scores = find_optimized_parameters(threashold, src, boxes, (3,2), c_factor=2, alpha=20, survivors_size=20, gen_size=1000, gen_random=50, max_iter=50)
+    params, scores = find_optimized_parameters(threashold, src, boxes, (3,2), c_factor=5, alpha=10, survivors_size=50, gen_size=1000, gen_random=100, max_iter=100)
     plt.plot(np.arange(len(scores)), scores)
     print(params)
     plt.show()
