@@ -12,7 +12,7 @@ def threshold(frame, params):
 def main():
     src = []
     boxes = []
-    video = cv2.VideoCapture(0)
+    video = cv2.VideoCapture(1)
     while True:
         ok, frame = video.read()
         cv2.imshow('window', frame)

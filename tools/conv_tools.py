@@ -137,7 +137,7 @@ def main():
     #print("Alexey: " + str(te - tm))
 
 
-    video = cv2.VideoCapture(1)  # set this to the path to the video file
+    video = cv2.VideoCapture(0)  # set this to the path to the video file
 
     # Exit if video not opened.
     if not video.isOpened():
