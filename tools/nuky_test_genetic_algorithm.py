@@ -15,6 +15,11 @@ def threshold(frame, params):
     return cv2.inRange(frame, (red[0], green[0], blue[0]), (red[1], green[1], blue[1]))
 
 def nuky_test(image_generator):
+    """
+    the test that nuky wanted
+    :param image_generator: a generator of image/threshold image pairs
+    :return: the original image/threshold image, the output parameters and the threshold image (yields)
+    """
     for img, black_img in image_generator:
         b_img = prep_image(black_img)
         params, scores = find_optimized_parameters(threshold, [img], [b_img], (3, 2), c_factor=5, alpha=5,
@@ -44,7 +49,7 @@ def main():
         if k == ord('c'):
             cv2.destroyAllWindows()
             break
-    params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2), c_factor=5, alpha=5, survivors_size=10, gen_size=1000, gen_random=100, max_iter=20, range_regulator=0.5)
+    params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2), c_factor=5, alpha=5, survivors_size=20, gen_size=1000, gen_random=100, max_iter=20, range_regulator=0.5)
     plt.plot(np.arange(len(scores)), scores)
     print(params)
     plt.show()
