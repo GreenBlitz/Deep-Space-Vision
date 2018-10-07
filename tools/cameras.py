@@ -13,10 +13,10 @@ class Camera(cv2.VideoCapture):
 
 class CameraList:
     def __init__(self, cams, constants, select_cam=0):
-        self.cameras = []
+        self.cameras = {}
         self.camera = None
         for i, c in enumerate(set(cams)):
-            self.cameras.append(Camera(c, constants[i]))
+            self.cameras[c] = (Camera(c, constants[i]))
         self.lock = Lock()
         self.camera = self.cameras[select_cam]
 
@@ -39,22 +39,30 @@ class CameraList:
             if len(args) == 0:
                 return self.camera.read()
             images = []
-            for i in set(args):
+            for i in args:
                 images.append(self.cameras[i].read())
             return images
 
     def add_camera(self, index:int or str, constant: float or int):
         with self.lock:
-            self.cameras.append(Camera(index, constant))
+            self.cameras[index] = Camera(index, constant)
             self.sort()
 
-    def sort(self):
+    @property
+    def constant(self):
         with self.lock:
-            self.cameras.sort(key=lambda x: x.index)
+            return self.camera.constant
 
-    def set_camera_by_index(self, index:int or str):
+    @property
+    def index(self):
         with self.lock:
-            for i in self.cameras:
-                if i.index == index:
-                    self.camera = i
-                    return
+            return self.camera.index
+
+    def release(self):
+        with self.lock:
+            del self.cameras[self.camera.index]
+            self.camera = None
+
+    def default(self):
+        with self.lock:
+            self.camera = self.cameras[list(self.cameras)[0]]
