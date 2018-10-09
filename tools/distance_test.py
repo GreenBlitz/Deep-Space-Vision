@@ -3,9 +3,9 @@ import numpy as np
 from tools.cameras import Camera
 from tools.pipeline import PipeLine
 
-red_detection_params =  np.array([[173.46106735, 188.03026678],
-                                  [ 66.49687872, 142.5853625 ],
-                                  [133.48859651, 189.53074141]])
+array = np.array
+
+red_detection_params =  [array([169.49740323, 183.96048346]), array([ 98.49883554, 148.80138569]), array([ 65.49350055, 116.5916365 ])]
 
 def threshold(frame, params):
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HLS)
@@ -27,7 +27,7 @@ pipeline2 = PipeLine(lambda cnt: (cnt, 0.05 * cv2.arcLength(cnt, True)),
                     lambda polydp: list(map(tuple, polydp)))
 
 def main():
-    camera = Camera(1, 648.5256168410046)
+    camera = Camera(0, 648.5256168410046)
     while True:
         ok, frame = camera.read()
         cv2.imshow('ooooo', pipeline(frame))

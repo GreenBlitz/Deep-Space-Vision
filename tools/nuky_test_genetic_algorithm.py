@@ -25,7 +25,7 @@ def nuky_test(image_generator):
 def main():
     src = []
     boxes = []
-    video = cv2.VideoCapture(1)
+    video = cv2.VideoCapture(0)
     while True:
         ok, frame = video.read()
         cv2.imshow('window', frame)
@@ -43,9 +43,9 @@ def main():
         if k == ord('c'):
             cv2.destroyAllWindows()
             break
-    params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2), c_factor=5, alpha=5, survivors_size=20, gen_size=1000, gen_random=100, max_iter=20, range_regulator=0.1)
+    params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2), c_factor=5, alpha=5, survivors_size=20, gen_size=1000, gen_random=100, max_iter=20, range_regulator=0.2)
     plt.plot(np.arange(len(scores)), scores)
-    print(params)
+    print(list(params))
     plt.show()
     while True:
         cv2.imshow('original', src[0])

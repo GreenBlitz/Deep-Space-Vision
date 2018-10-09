@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 from tools.cameras import Camera, CameraList
+from tools.pipeline import PipeLine
 
 
 class ImageObject:
@@ -18,5 +19,5 @@ class ImageObject:
         self.shape = shape
         self.three_d_shape = three_d_shape
 
-    def distance(self, camera:Camera or CameraList, pipeline) -> float:
-        pass
+    def distance(self, camera:Camera or CameraList, pipeline: PipeLine) -> float:
+        return camera.constant*np.sqrt(self.area)/pipeline(camera.read()[1])
