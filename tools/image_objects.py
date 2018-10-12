@@ -20,10 +20,23 @@ class ImageObject:
         self.three_d_shape = three_d_shape
 
     def distance(self, camera:Camera or CameraList, pipeline: PipeLine, frame=None) -> float:
+        """
+        :param camera: the camera, can be either Camera or CameraList
+        :param pipeline: a pipeline that returns a float representing the square root of the area of the object
+        (in pixels)
+        :param frame: optional, a frame to be used instead of the next image from the camera
+        :return: the norm of the vector between the camera and the object (in meters)
+        """
         return camera.constant*self.area/pipeline(camera.read()[1] if frame is None else frame)
 
-    def location2d(self, camera: Camera or CameraList, pipeline: PipeLine, frame:np.ndarray=None,
-                   camera_height=0, camera_angle=0.0) -> np.ndarray:
+    def location2d(self, camera: Camera or CameraList, pipeline: PipeLine, frame:np.ndarray=None) -> np.ndarray:
+        """
+        calculates the 2d location [x z] between the object and the camera
+        :param camera: the camera, can be either Camera or CameraList
+        :param pipeline: a pipeline that returns the counters of the object
+        :param frame: optional, a frame to be used instead of the next image from the camera
+        :return: a 2d vector of the relative [x z] location between the object and the camera (in meters)
+        """
         frame = camera.read() if frame is None else frame
         cnt = pipeline(frame)
         d_norm = self.distance(camera, pipeline + PipeLine(lambda f: np.sqrt(cv2.contourArea(cnt))))
