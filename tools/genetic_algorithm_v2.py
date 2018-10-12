@@ -4,13 +4,13 @@ import numpy as np
 
 def prep_image(img:np.ndarray) -> np.ndarray:
     if len(img.shape) == 3:
-        f = cv2.inRange(img, (1, 0, 0), (255, 255, 255)) |\
-               cv2.inRange(img, (0, 1, 0), (255, 255, 255)) | \
-               cv2.inRange(img, (0, 0, 1), (255, 255, 255))
+        f = cv2.inRange(img, (1, 0, 0), (255, 255, 255))
+        f = cv2.bitwise_or(f, cv2.inRange(img, (0, 1, 0), (255, 255, 255)))
+        f = cv2.bitwise_or(f, cv2.inRange(img, (0, 0, 1), (255, 255, 255)))
     else:
         f = cv2.threshold(img, 1, 255, cv2.THRESH_BINARY)
-        s = f.mean()
-        return np.vectorize(lambda x: (-1) if x == 0 else ((1-s)/s))(f)
+    s = f.mean()/255.0
+    return np.vectorize(lambda x: (-1.0) if x == 0 else ((1.0-s)/s))(f.astype(float))
 
 def create_params(shape, factor):
     return np.random.rand(*shape)*factor
@@ -20,7 +20,7 @@ def get_score(item, frame, bbox, func, reg):
     #f = frametag[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2]]
     #s = f.sum()
     #return s/f.size - (frametag.sum() - s)/(frametag.size - f.size) - reg*(np.abs(item[:,0] - item[:,1]).sum())
-    return np.mean(frametag*bbox) - reg*(np.abs(item[:,0] - item[:,1]).sum())
+    return np.mean(frametag*bbox) - (reg*np.abs(item[:,0] - item[:,1])).sum()
 
 def create_child(sur, alpha, factor):
     child = np.sign(np.random.rand(*sur[0].shape))* 10**(-alpha * np.random.rand(*sur[0].shape))*factor

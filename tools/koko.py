@@ -1,4 +1,4 @@
-from tools.distance_test import measure_distance
+
 def specialfunc():
     return 6 # top ten phisica
 def doPhisica(v):
