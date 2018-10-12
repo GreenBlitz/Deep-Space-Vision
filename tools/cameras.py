@@ -3,10 +3,11 @@ import numpy as np
 from threading import Lock
 
 class Camera(cv2.VideoCapture):
-    def __init__(self, index, const):
+    def __init__(self, index, const, angle):
         cv2.VideoCapture.__init__(self, index)
         self.constant = float(const)
         self.index = index
+        self.view_range = angle
     def __del__(self):
         self.release()
 
@@ -57,6 +58,11 @@ class CameraList:
     def index(self):
         with self.lock:
             return self.camera.index
+
+    @property
+    def view_range(self):
+        with self.lock:
+            return self.camera.view_range
 
     def release(self):
         with self.lock:

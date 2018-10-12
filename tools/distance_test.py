@@ -2,8 +2,7 @@ import cv2
 import numpy as np
 from tools.cameras import Camera
 from tools.pipeline import PipeLine
-from tools.conv_tools import blur
-
+from tools.image_objects import ImageObject
 array = np.array
 
 red_detection_params = [array([19.39925944, 45.96760714]), array([ 88.45797967, 191.11653479]), array([112.4847102 , 203.04345544])]
@@ -31,49 +30,50 @@ pipeline2 = PipeLine(lambda cnt: (cnt, 0.05 * cv2.arcLength(cnt, True)),
                     lambda polydp: list(map(tuple, polydp)))
 
 pipeline3 = PipeLine(lambda cnt: cv2.moments(cnt),
-                     lambda m: (m['m10']/(m['m00'] + 0.000001), m['m01']/(m['m00'] + 0.000001)))
+                     lambda m: (int(m['m10']/(m['m00'] + 0.000001)), int(m['m01']/(m['m00'] + 0.000001))))
 
-pipeline4 = pipeline + PipeLine(lambda frame: cv2.distanceTransform(frame, cv2.DIST_L2, 3))
+pipeline4 = pipeline1 + PipeLine(lambda cnt: np.sqrt(cv2.contourArea(cnt)))
 
 def main():
-    camera = Camera(1, 648.5256168410046)
-    area = 0.22510163906500055/2
-    theta = 0.340394
+    camera = Camera(1, 648.5256168410046, 0.340394)
+    ball = ImageObject(0.22510163906500055/2)
     while True:
         ok, frame = camera.read()
         cv2.imshow('feed', pipeline(frame))
         cnt = pipeline1(frame)
 
-
-
         if cnt is not None:
-            pixel_area = np.sqrt(cv2.contourArea(cnt))
-            polydp = pipeline2(cnt)
-            cv2.drawContours(frame, [cnt], 0, (0, 255, 0) ,2)
-            #for i, val in enumerate(polydp):
-            #    cv2.line(frame, val, polydp[(i + 1) % len(polydp)], (255, 0, 0), 3)
+            cv2.drawContours(frame, [cnt], 0, (0, 255, 0), 2)
+            c = pipeline3(cnt)
+            cv2.circle(frame, c, 2, (0,0,255),2)
+            cv2.circle(frame, (frame.shape[1]//2, frame.shape[0]//2), 2, (255,0,0),2)
 
-            object_center = np.array(pipeline3(cnt))
-
-            frame_center = np.array(frame.shape[:2][::-1])/2
-
-            norm_d = area*camera.constant/(pixel_area + 0.00000001)
-
-            vp = object_center - frame_center
-
-            alpha = theta*vp[0]/frame_center[0]
-
-            d = norm_d*np.array([np.sin(alpha), np.cos(alpha)])
-
-
+        #    pixel_area = np.sqrt(cv2.contourArea(cnt))
+        #    polydp = pipeline2(cnt)
+        #
+        #    #for i, val in enumerate(polydp):
+        #    #    cv2.line(frame, val, polydp[(i + 1) % len(polydp)], (255, 0, 0), 3)
+#
+        #    object_center = np.array(pipeline3(cnt))
+#
+        #    frame_center = np.array(frame.shape[:2][::-1])/2
+#
+        #    norm_d = area*camera.constant/(pixel_area + 0.00000001)
+#
+        #    vp = object_center - frame_center
+#
+        #    alpha = theta*vp[0]/frame_center[0]
+#
+        #    d = norm_d*np.array([np.sin(alpha), np.cos(alpha)])
+#
+#
         cv2.imshow('original', frame)
-        #cv2.imshow('pipe', thr)
         k = cv2.waitKey(1) & 0xFF
-
+#
         if k == ord('d'):
-            print(d)
-            print(norm_d)
-
+            print(ball.location2d(camera, pipeline1, frame, camera_angle=1.3258176636680323, camera_height=1))
+            print(ball.distance(camera, pipeline4, frame))
+#
         if k == ord('c'):
             cv2.destroyAllWindows()
             break

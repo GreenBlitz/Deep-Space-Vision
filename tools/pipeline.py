@@ -1,14 +1,13 @@
 import cv2
 import numpy as np
+import functools
 
 class PipeLine:
     def __init__(self, *functions):
         self.functions = list(functions)
 
     def __call__(self, image:np.ndarray):
-        for i in self.functions:
-            image = i(image)
-        return image
+        return functools.reduce(lambda x, f: f(x), self.functions, image)
 
     def __add__(self, other):
         return PipeLine(*self.functions + other.functions)
