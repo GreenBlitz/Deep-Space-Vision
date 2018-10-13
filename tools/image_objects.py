@@ -9,7 +9,7 @@ class ImageObject:
         """
         constructor of the image object
         which is an object on field
-        :param area: the area of the object (in squared meters), float
+        :param area: the square root of the area of the object (in squared meters), float
         :param shape: optional, the shape of the object (2d)
         used to test if a recorded object is the object represented by the image object
         :param three_d_shape: the three dimensional shape of the object
@@ -50,3 +50,15 @@ class ImageObject:
         x, y = np.array(vp) - frame_center
         alpha = x*camera.view_range/frame_center[0]
         return np.array([np.sin(alpha), np.cos(alpha)])*d_norm
+
+    def distance_by_contours(self, camera, cnt):
+        return self.area*camera.constant/np.sqrt(cv2.contourArea(cnt))
+
+    def location2d_by_contours(self, camera, cnt):
+        frame_center = camera.get(cv2.CAP_PROP_FRAME_WIDTH), camera.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        frame_center = np.array(frame_center)/2
+        m = cv2.moments(cnt)
+        vp = m['m10'] / (m['m00'] + 0.000001), m['m01'] / (m['m00'] + 0.000001)
+        x, y = np.array(vp) - frame_center
+        alpha = x * camera.view_range / frame_center[0]
+        return np.array([np.sin(alpha), np.cos(alpha)]) * self.distance_by_contours(camera, cnt)

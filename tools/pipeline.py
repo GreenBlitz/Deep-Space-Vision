@@ -10,10 +10,14 @@ class PipeLine:
         return functools.reduce(lambda x, f: f(x), self.functions, image)
 
     def __add__(self, other):
-        return PipeLine(*self.functions + other.functions)
+        if isinstance(other, PipeLine):
+            return PipeLine(*self.functions + other.functions)
+        return PipeLine(*self.functions + [other])
 
     def __iadd__(self, fun):
-        self.functions += fun.functions
+        if isinstance(fun, PipeLine):
+            self.functions += fun.functions
+        self.functions.append(fun)
 
     def __getitem__(self, item):
         return self.functions[item]
