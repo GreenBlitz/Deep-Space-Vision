@@ -20,6 +20,7 @@ class Camera(cv2.VideoCapture):
         self.constant = float(const)
         self.port = port
         self.view_range = angle
+
     def __del__(self):
         self.release()
 

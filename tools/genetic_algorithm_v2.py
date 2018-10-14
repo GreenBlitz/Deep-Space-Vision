@@ -2,7 +2,7 @@ import cv2
 import random
 import numpy as np
 
-def prep_image(img:np.ndarray) -> np.ndarray:
+def prep_image(img):
     if len(img.shape) == 3:
         f = cv2.inRange(img, (1, 0, 0), (255, 255, 255))
         f = cv2.bitwise_or(f, cv2.inRange(img, (0, 1, 0), (255, 255, 255)))
@@ -31,7 +31,6 @@ def create_child(sur, alpha, factor):
 
 def find_optimized_parameters(function, images, bboxes, p_shape, gen_size=50, survivors_size=0, p_factor=255, alpha=50, max_iter=100, gen_random=5, c_factor=1, range_regulator=0.5):
     gen = []
-    scores = []
     all_scores = []
     best = None
     max_score = -np.inf
@@ -51,7 +50,7 @@ def find_optimized_parameters(function, images, bboxes, p_shape, gen_size=50, su
                 best = i
 
         survivors = list(map(lambda x: x[0].flatten(), sorted(scores, key=lambda x: x[1], reverse=True)))[:survivors_size]
-        gen.clear()
+        gen = []
         for i in range(gen_size-gen_random):
             gen.append(create_child(survivors, alpha, c_factor).reshape(p_shape))
         for i in range(gen_random):

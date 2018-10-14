@@ -24,6 +24,7 @@ HLS threshold for fuel (the annoying little yellow ballz)
 """
 red_detection_params = [array([19.39925944, 45.96760714]), array([ 88.45797967, 191.11653479]), array([112.4847102 , 203.04345544])]
 
+
 def threshold(frame, params):
     """
     thresholds the image according to HLS values
@@ -41,8 +42,7 @@ def threshold(frame, params):
 """
 pipeline from image to binary image of the fuel (annoying little yellow balls)
 """
-pipeline = PipeLine(#lambda frame: cv2.GaussianBlur(frame, (3,3), 1),
-                    lambda frame: threshold(frame, red_detection_params),
+pipeline = PipeLine(lambda frame: threshold(frame, red_detection_params),
                     lambda frame: cv2.erode(frame, np.ones((3,3))),
                     lambda frame: cv2.dilate(frame, np.ones((3,3)), iterations=4))
 

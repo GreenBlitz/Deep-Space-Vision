@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from tools.find_optimized_parameters import find_optimized_parameters
+from find_optimized_parameters import find_optimized_parameters
 import matplotlib.pyplot as plt
 
 def threshold(frame, params):
