@@ -1,18 +1,32 @@
 import cv2
 import numpy as np
-from tools.cameras import Camera
-from tools.pipeline import PipeLine
-from tools.image_objects import ImageObject
+from cameras import Camera
+from pipeline import PipeLine
+from image_objects import ImageObject
 array = np.array
 
+def is_circle_invalid(center1, r1, center2, r2):
+    """
+    checks for BallCeption
+    :param center1:
+    :param r1:
+    :param center2:
+    :param r2:
+    :return:
+    """
+    return (center1[0] - center2[0])**2 + (center1[1] - center2[1])**2 < (r1+r2)**2
+
+def p_ball(carea, r):
+    return carea/(2*np.pi*(r**2))
+
 """
-hls threshold for fuel (the annoying little yellow balls) 
+HLS threshold for fuel (the annoying little yellow ballz) 
 """
 red_detection_params = [array([19.39925944, 45.96760714]), array([ 88.45797967, 191.11653479]), array([112.4847102 , 203.04345544])]
 
 def threshold(frame, params):
     """
-    thresholds the image according to hls values
+    thresholds the image according to HLS values
     :param frame: the image
     :param params: the hls values, 3x2 matrix of [hmin hmax]
                                                  [lmin lmax]
@@ -27,7 +41,8 @@ def threshold(frame, params):
 """
 pipeline from image to binary image of the fuel (annoying little yellow balls)
 """
-pipeline = PipeLine(lambda frame: threshold(frame, red_detection_params),
+pipeline = PipeLine(#lambda frame: cv2.GaussianBlur(frame, (3,3), 1),
+                    lambda frame: threshold(frame, red_detection_params),
                     lambda frame: cv2.erode(frame, np.ones((3,3))),
                     lambda frame: cv2.dilate(frame, np.ones((3,3)), iterations=4))
 
@@ -42,15 +57,16 @@ pipeline1 = pipeline + PipeLine(lambda frame: cv2.findContours(frame, cv2.RETR_T
 pipeline from image to contours of fuel (balls)
 """
 pipeline_cnts = pipeline + PipeLine(lambda frame: cv2.findContours(frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[1],
-                    lambda cnts: filter(lambda c: cv2.contourArea(c) >= 300.0, cnts))
+                                    lambda cnts: filter(lambda c: cv2.contourArea(c) >= 300.0, cnts),
+                                    lambda cnts: sorted(cnts, key=lambda x: cv2.contourArea(x), reverse=True))
 
 """
 pipeline from a single contour to polygon representation
 """
 pipeline2 = PipeLine(lambda cnt: (cnt, 0.05 * cv2.arcLength(cnt, True)),
-                    lambda cnt0_eps1: cv2.approxPolyDP(cnt0_eps1[0], cnt0_eps1[1], True),
-                    lambda polydp: map(lambda x: x[0], polydp),
-                    lambda polydp: list(map(tuple, polydp)))
+                     lambda cnt0_eps1: cv2.approxPolyDP(cnt0_eps1[0], cnt0_eps1[1], True),
+                     lambda polydp: map(lambda x: x[0], polydp),
+                     lambda polydp: list(map(tuple, polydp)))
 
 """
 pipeline from a single contour to it's center x,y coordinates
@@ -127,7 +143,7 @@ def main2():
             break
 
 
-def main3():
+def detect_balls_by_radius():
     """
     get coordinates and distance of all balls
     """
@@ -139,19 +155,31 @@ def main3():
         cnts = list(pipeline_cnts(frame))
         d = []
         d_norm = []
+        rs = []
+        centers = []
         if len(cnts) > 0:
             for cnt in cnts:
+                to_continue = False
                 center, r = cv2.minEnclosingCircle(cnt)
+                #if p_ball(cv2.contourArea(cnt), r) # 0.0:
+                #    continue
+                for i in range(len(rs)):
+                    if is_circle_invalid(center1=center, r1=r, center2=centers[i], r2=rs[i]):
+                        to_continue = True
+                        break
+
+                if to_continue:
+                    continue
+
+                centers.append(center)
+                rs.append(r)
                 cv2.circle(frame, tuple(map(int, center)), int(r), (0, 255, 0), 2)
                 cv2.circle(frame, tuple(map(int, center)), 2, (0, 0, 255), 2)
                 area = np.sqrt(np.pi)*r
                 d_norm.append(ball.distance_by_params(camera, area))
                 d.append(ball.location2d_by_params(camera, area, center))
 
-
-            cv2.circle(frame, (frame.shape[1] // 2, frame.shape[0] // 2), 2, (255, 0, 0), 2)
-
-
+        cv2.circle(frame, (frame.shape[1] // 2, frame.shape[0] // 2), 2, (255, 0, 0), 2)
         cv2.imshow('original', frame)
         k = cv2.waitKey(1) & 0xFF
 
@@ -163,6 +191,7 @@ def main3():
             cv2.destroyAllWindows()
             break
 
+
 if __name__ == '__main__':
-    main3()
+    detect_balls_by_radius()
 

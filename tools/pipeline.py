@@ -6,7 +6,7 @@ class PipeLine:
     def __init__(self, *functions):
         self.functions = list(functions)
 
-    def __call__(self, image:np.ndarray):
+    def __call__(self, image):
         return functools.reduce(lambda x, f: f(x), self.functions, image)
 
     def __add__(self, other):

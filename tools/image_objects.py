@@ -1,11 +1,11 @@
 import numpy as np
 import cv2
-from tools.cameras import Camera, CameraList
-from tools.pipeline import PipeLine
+from cameras import Camera, CameraList
+from pipeline import PipeLine
 
 
 class ImageObject:
-    def __init__(self, area, shape=None ,three_d_shape=None):
+    def __init__(self, area, shape=None ,shape3d=None):
         """
         constructor of the image object
         which is an object on field
@@ -17,9 +17,9 @@ class ImageObject:
         """
         self.area = area
         self.shape = shape
-        self.three_d_shape = three_d_shape
+        self.shape3d = shape3d
 
-    def distance(self, camera:Camera or CameraList, pipeline: PipeLine, frame=None) -> float:
+    def distance(self, camera, pipeline, frame=None):
         """
         :param camera: the camera, can be either Camera or CameraList
         :param pipeline: a pipeline that returns a float representing the square root of the area of the object
@@ -29,11 +29,11 @@ class ImageObject:
         """
         return camera.constant*self.area/pipeline(camera.read()[1] if frame is None else frame)
 
-    def location2d(self, camera: Camera or CameraList, pipeline: PipeLine, frame:np.ndarray=None) -> np.ndarray:
+    def location2d(self, camera, pipeline, frame=None):
         """
         calculates the 2d location [x z] between the object and the camera
         :param camera: the camera, can be either Camera or CameraList
-        :param pipeline: a pipeline that returns the counters of the object
+        :param pipeline: a pipeline that returns the contour of the object
         :param frame: optional, a frame to be used instead of the next image from the camera
         :return: a 2d vector of the relative [x z] location between the object and the camera (in meters)
         """
@@ -94,4 +94,6 @@ class ImageObject:
 
 
 class ImageBall(ImageObject):
+    def ligma(self):
+        print("ligma ballz")
     pass # TODO complete this class if you want (i don't)

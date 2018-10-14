@@ -46,7 +46,7 @@ class CameraList:
         self.lock = Lock()
         self.camera = self.cameras[select_cam] if select_cam in self.cameras else None
 
-    def __getitem__(self, item:int) -> cv2.VideoCapture:
+    def __getitem__(self, item):
         with self.lock:
             return self.cameras[item]
 
@@ -60,7 +60,7 @@ class CameraList:
                 self.camera = None
             del self.cameras[key]
 
-    def read(self, *args) -> np.ndarray or list:
+    def read(self, *args):
         with self.lock:
             if len(args) == 0:
                 return self.camera.read()
@@ -69,7 +69,7 @@ class CameraList:
                 images.append(self.cameras[i].read())
             return images
 
-    def add_camera(self, index:int or str, constant: float or int, view_range:float):
+    def add_camera(self, index, constant, view_range):
         with self.lock:
             self.cameras[index] = Camera(index, constant, view_range)
 

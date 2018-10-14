@@ -59,7 +59,7 @@ pixelize = np.vectorize(_pixelize)
 
 
 
-def convolve(src:np.ndarray, kernel:np.ndarray) -> np.ndarray:
+def convolve(src, kernel):
     assert len(kernel.shape) == len(src.shape)
 
     if len(kernel.shape) == 1:
@@ -67,7 +67,7 @@ def convolve(src:np.ndarray, kernel:np.ndarray) -> np.ndarray:
 
     return __convolve(src, kernel, [])
 
-def subtensor(src:np.ndarray, start_ind:list, end_ind:list or np.ndarray, index=0) -> np.ndarray:
+def subtensor(src, start_ind, end_ind, index=0):
     if len(src.shape) == 1:
         return src[start_ind[index]:end_ind[index]]
     return_arr = []
@@ -75,7 +75,7 @@ def subtensor(src:np.ndarray, start_ind:list, end_ind:list or np.ndarray, index=
         return_arr.append(subtensor(src[i], start_ind, end_ind, index+1))
     return np.array(return_arr)
 
-def __convolve(src:np.ndarray, kernel:np.ndarray, ind:list) -> np.ndarray:
+def __convolve(src, kernel, ind):
     ax = len(ind)
     if ax == len(kernel.shape):
         return np.sum(subtensor(src, ind, np.array(ind) + np.array(kernel.shape))*kernel)
@@ -88,7 +88,7 @@ def __convolve(src:np.ndarray, kernel:np.ndarray, ind:list) -> np.ndarray:
 red_detector = RedDetector()
 
 
-def find_red_square(im:np.ndarray, threshhold=100):
+def find_red_square(im, threshhold=100):
     #im = im/(np.sum(im, axis=2) + 0.000001).reshape(im.shape[0:2] + (1,))*255
 #
     #im2 = red(im) - (green(im)+blue(im))*0.8
@@ -211,28 +211,28 @@ def main():
 
     cv2.destroyAllWindows()
 
-def corners(im:np.ndarray) -> np.ndarray:
+def corners(im):
     return cv2.filter2D(im, -1, np.array([[-1,1],[1,-1]]))
 
-def edges(im:np.ndarray) -> np.ndarray:
+def edges(im):
     return cv2.filter2D(im, -1, np.array([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]))
 
-def sharpen(im:np.ndarray) -> np.ndarray:
+def sharpen(im):
     return cv2.filter2D(im, -1, np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]]))
 
-def blur(im:np.ndarray) -> np.ndarray:
+def blur(im):
     return cv2.filter2D(im, -1, np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])/9)
 
-def blue(im:np.ndarray) -> np.ndarray:
+def blue(im):
     return im[:,:,0]
 
-def green(im:np.ndarray) -> np.ndarray:
+def green(im):
     return im[:,:,1]
 
-def red(im:np.ndarray) -> np.ndarray:
+def red(im):
     return im[:,:,2]
 
-def gray(im:np.ndarray) -> np.ndarray:
+def gray(im):
     return cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 
 def hein(x):
