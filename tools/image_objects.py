@@ -62,3 +62,26 @@ class ImageObject:
         x, y = np.array(vp) - frame_center
         alpha = x * camera.view_range / frame_center[0]
         return np.array([np.sin(alpha), np.cos(alpha)]) * self.distance_by_contours(camera, cnt)
+
+    def distance_by_params(self, camera, area):
+        """
+        :param camera: the camera, can be either Camera or CameraList
+        :param area: a float representing the square root of the area of the object
+        (in pixels)
+        :return: the norm of the vector between the camera and the object (in meters)
+        """
+        return camera.constant * self.area / area
+
+    def location2d_by_params(self, camera, area, center):
+        """
+        :param camera: the camera, can be either Camera or CameraList
+        :param area: a float representing the square root of the area of the object
+        (in pixels)
+        :param center: the center (x,y) of this object in the frame
+        :return: a 2d vector of the relative [x z] location between the object and the camera (in meters)
+        """
+        frame_center = camera.get(cv2.CAP_PROP_FRAME_WIDTH), camera.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        frame_center = np.array(frame_center) / 2
+        x, y = np.array(center) - frame_center
+        alpha = x * camera.view_range / frame_center[0]
+        return np.array([np.sin(alpha), np.cos(alpha)]) * self.distance_by_params(camera, area)

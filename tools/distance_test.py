@@ -42,7 +42,7 @@ pipeline1 = pipeline + PipeLine(lambda frame: cv2.findContours(frame, cv2.RETR_T
 pipeline from image to contours of fuel (balls)
 """
 pipeline_cnts = pipeline + PipeLine(lambda frame: cv2.findContours(frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[1],
-                    lambda cnts: filter(lambda c: cv2.contourArea(c) >= 200.0, cnts))
+                    lambda cnts: filter(lambda c: cv2.contourArea(c) >= 300.0, cnts))
 
 """
 pipeline from a single contour to polygon representation
@@ -126,6 +126,43 @@ def main2():
             cv2.destroyAllWindows()
             break
 
+
+def main3():
+    """
+    get coordinates and distance of all balls
+    """
+    camera = Camera(1, 648.5256168410046, 0.340394)
+    ball = ImageObject(0.22510163906500055 / 2)
+    while True:
+        ok, frame = camera.read()
+        cv2.imshow('feed', pipeline(frame))
+        cnts = list(pipeline_cnts(frame))
+        d = []
+        d_norm = []
+        if len(cnts) > 0:
+            for cnt in cnts:
+                center, r = cv2.minEnclosingCircle(cnt)
+                cv2.circle(frame, tuple(map(int, center)), int(r), (0, 255, 0), 2)
+                cv2.circle(frame, tuple(map(int, center)), 2, (0, 0, 255), 2)
+                area = np.sqrt(np.pi)*r
+                d_norm.append(ball.distance_by_params(camera, area))
+                d.append(ball.location2d_by_params(camera, area, center))
+
+
+            cv2.circle(frame, (frame.shape[1] // 2, frame.shape[0] // 2), 2, (255, 0, 0), 2)
+
+
+        cv2.imshow('original', frame)
+        k = cv2.waitKey(1) & 0xFF
+
+        if k == ord('d'):
+            print(d)
+            print(d_norm)
+
+        if k == ord('c'):
+            cv2.destroyAllWindows()
+            break
+
 if __name__ == '__main__':
-    main()
+    main3()
 
