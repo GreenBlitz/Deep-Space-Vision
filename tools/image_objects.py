@@ -43,18 +43,24 @@ class ImageObject:
         m = cv2.moments(cnt)
         frame_center = np.array(frame.shape[:2][::-1]) / 2
         vp = m['m10'] / (m['m00'] + 0.000001), m['m01'] / (m['m00'] + 0.000001)
-        #if camera_height != 0:
-        #    rotation = np.array([[np.cos(camera_angle), np.sin(camera_angle)],
-        #                         [np.sin(-camera_angle), np.cos(camera_angle)]])
-        #    vp = rotation.dot(np.array([vp]).T).reshape(2)
         x, y = np.array(vp) - frame_center
         alpha = x*camera.view_range/frame_center[0]
         return np.array([np.sin(alpha), np.cos(alpha)])*d_norm
 
     def distance_by_contours(self, camera, cnt):
+        """
+        :param camera: the camera, can be either Camera or CameraList
+        :param cnt: the contours of this object in the frame
+        :return: the norm of the vector between the camera and the object (in meters)
+        """
         return self.area*camera.constant/np.sqrt(cv2.contourArea(cnt))
 
     def location2d_by_contours(self, camera, cnt):
+        """
+        :param camera: the camera, can be either Camera or CameraList
+        :param cnt: the contours of this object in the frame
+        :return: a 2d vector of the relative [x z] location between the object and the camera (in meters)
+        """
         frame_center = camera.get(cv2.CAP_PROP_FRAME_WIDTH), camera.get(cv2.CAP_PROP_FRAME_HEIGHT)
         frame_center = np.array(frame_center)/2
         m = cv2.moments(cnt)
@@ -85,3 +91,7 @@ class ImageObject:
         x, y = np.array(center) - frame_center
         alpha = x * camera.view_range / frame_center[0]
         return np.array([np.sin(alpha), np.cos(alpha)]) * self.distance_by_params(camera, area)
+
+
+class ImageBall(ImageObject):
+    pass # TODO complete this class if you want (i don't)
