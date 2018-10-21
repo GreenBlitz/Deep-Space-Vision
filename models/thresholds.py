@@ -55,7 +55,7 @@ THRESHOLD_NAME_TABLE = {
 
 class Threshold:
     def __init__(self, lst, thresh_type='HSV'):
-        assert thresh_type in THRESHOLD_NAME_TABLE
+        assert thresh_type.upper() in THRESHOLD_NAME_TABLE
         self.init = lst
         self.type = thresh_type.upper()
 
