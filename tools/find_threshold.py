@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from genetic_algorithm_v2 import find_optimized_parameters
+from genetic_threshold import find_optimized_parameters
 import matplotlib.pyplot as plt
 
 
@@ -33,10 +33,10 @@ def main():
             break
     params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2),
                                                c_factor=5, alpha=5, survivors_size=20,
-                                               gen_size=1000, gen_random=100, max_iter=15,
-                                               range_regulator=np.array([0.2, 0.5, 0.5]))
+                                               gen_size=1000, gen_random=100, max_iter=30,
+                                               range_regulator=np.array([0.05, 0.2, 0.2]))
     plt.plot(np.arange(len(scores)), scores)
-    print(list(params))
+    print(map(list, params))
     plt.show()
     while True:
         cv2.imshow('original', src[0])

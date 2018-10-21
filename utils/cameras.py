@@ -4,8 +4,8 @@ import cv2
 
 class CameraData:
     def __init__(self, surface_constant, fov):
-        self.surface_constant = surface_constant
-        self.fov = fov
+        self.constant = surface_constant
+        self.view_range = fov
 
 
 class Camera:
