@@ -29,6 +29,8 @@ HLS threshold for fuel (the annoying little yellow ballz)
 #red_detection_params = [array([19.39925944, 45.96760714]), array([ 88.45797967, 191.11653479]), array([112.4847102 , 203.04345544])]
 #red_detection_params = [array([33.27126693, 47.31689005]), array([110.49726198, 148.57312153]), array([139.49983957, 168.50129412])]
 red_detection_params = [array([33.46342507, 45.14846628]), array([ 90.4936124 , 182.02390718]), array([129.49086936, 194.548855  ])]
+
+
 def threshold(frame, params):
     """
     thresholds the image according to HLS values
@@ -54,12 +56,12 @@ pipeline = PipeLine(lambda frame: threshold(frame, red_detection_params),
 pipeline from image to contour of largest (closest) fuel (ball)
 """
 pipeline1 = pipeline + PipeLine(lambda frame: cv2.findContours(frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[1],
-                    lambda cnts: sorted(cnts, key=lambda x: cv2.contourArea(x), reverse=True),
-                    lambda cnts: cnts[0] if len(cnts) > 0 else None)
+                    lambda cnts: sorted(cnts, key=lambda x: cv2.contourArea(x), reverse=True))
 
 """
 pipeline from image to contours of fuel (balls)
 """
+
 pipeline_cnts = pipeline + PipeLine(lambda frame: cv2.findContours(frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[1],
                                     lambda cnts: filter(lambda c: cv2.contourArea(c) >= 300.0, cnts),
                                     lambda cnts: sorted(cnts, key=lambda x: cv2.contourArea(x), reverse=True))
