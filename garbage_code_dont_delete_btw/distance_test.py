@@ -5,6 +5,10 @@ from pipeline import PipeLine
 from image_objects import ImageObject
 array = np.array
 
+def crop_image(img, x, y, w, h):
+    return img[y:y+h, x:x+w, :]
+
+
 def is_circle_invalid(center1, r1, center2, r2):
     """
     checks for BallCeption
@@ -22,9 +26,9 @@ def p_ball(carea, r):
 """
 HLS threshold for fuel (the annoying little yellow ballz) 
 """
-red_detection_params = [array([19.39925944, 45.96760714]), array([ 88.45797967, 191.11653479]), array([112.4847102 , 203.04345544])]
-
-
+#red_detection_params = [array([19.39925944, 45.96760714]), array([ 88.45797967, 191.11653479]), array([112.4847102 , 203.04345544])]
+#red_detection_params = [array([33.27126693, 47.31689005]), array([110.49726198, 148.57312153]), array([139.49983957, 168.50129412])]
+red_detection_params = [array([33.46342507, 45.14846628]), array([ 90.4936124 , 182.02390718]), array([129.49086936, 194.548855  ])]
 def threshold(frame, params):
     """
     thresholds the image according to HLS values
@@ -147,7 +151,7 @@ def detect_balls_by_radius():
     """
     get coordinates and distance of all balls
     """
-    camera = Camera(1, 648.5256168410046, 0.340394)
+    camera = Camera(0, 648.5256168410046, 0.340394)
     ball = ImageObject(0.22510163906500055 / 2)
     while True:
         ok, frame = camera.read()
@@ -192,6 +196,104 @@ def detect_balls_by_radius():
             break
 
 
+balls_count = 0
+non_balls_count = 0
+
+class ImageOfObject:
+    def __init__(self, image, c, r):
+        self.images = [image]
+        self.center = c
+        self.r = r
+        self.counter = 30
+        self.label = "not_a_ball"
+        self.was_found = False
+
+    def copy(self, img, c, r):
+        self.images.append(img)
+        self.center = c
+        self.r = r
+        self.counter -= 1
+        self.was_found = True
+        if self.counter <= 0:
+            self.label = "ball"
+            self.save()
+
+    def save(self):
+        for i in self.images:
+            if i.size == 0:
+                continue
+            path = './' + self.label + "/" + self.label + str(balls_count if self.label == "ball" else non_balls_count) + ".bmp"
+            if self.label == 'ball':
+                globals()['balls_count'] += 1
+            else:
+                globals()['non_balls_count'] += 1
+            cv2.imwrite(path, cv2.resize(i, (32, 32)))
+        self.images = []
+
+def find_ball_in_list(c, r, l, img):
+    for i in l:
+        if np.linalg.norm(c - i.center) <= 0.1*i.r and abs(i.r - r) <= 0.1*i.r:
+            i.copy(img, c, r)
+            return True
+    return False
+
+
+def get_labeled_ball_images():
+    """
+    get coordinates and distance of all balls
+    """
+    camera = Camera(0, 648.5256168410046, 0.340394)
+    ball = ImageObject(0.22510163906500055 / 2)
+
+    images = []
+
+    while True:
+        ok, frame = camera.read()
+        cv2.imshow('feed', pipeline(frame))
+        cnts = list(pipeline_cnts(frame))
+        rs = []
+        centers = []
+        new_images = []
+        for i in images:
+            i.was_found = False
+        if len(cnts) > 0:
+            for cnt in cnts:
+                to_continue = False
+                center, r = cv2.minEnclosingCircle(cnt)
+                center = np.array(center, dtype=int)
+                r = int(r)
+                b_img = np.copy(frame[center[1] - r:center[1] + r, center[0] - r:center[0] + r, :])
+
+                for i in range(len(rs)):
+                    if is_circle_invalid(center1=center, r1=r, center2=centers[i], r2=rs[i]):
+                        to_continue = True
+                        break
+
+                if to_continue:
+                    continue
+
+                if not find_ball_in_list(center, r, images, b_img):
+                    new_images.append(ImageOfObject(b_img, center, r))
+
+                rs.append(r)
+                centers.append(center)
+        images.extend(new_images)
+        for i, img in enumerate(images):
+            if not img.was_found:
+                img.save()
+                del images[i]
+        for ind, center in enumerate(centers):
+            cv2.circle(frame, tuple(map(int, center)), int(rs[ind]), (0, 255, 0), 2)
+            cv2.circle(frame, tuple(map(int, center)), 2, (0, 0, 255), 2)
+        cv2.circle(frame, (frame.shape[1] // 2, frame.shape[0] // 2), 2, (255, 0, 0), 2)
+        cv2.imshow('original', frame)
+        k = cv2.waitKey(1) & 0xFF
+
+        if k == ord('c'):
+            cv2.destroyAllWindows()
+            break
+
+
 if __name__ == '__main__':
-    detect_balls_by_radius()
+    get_labeled_ball_images()
 

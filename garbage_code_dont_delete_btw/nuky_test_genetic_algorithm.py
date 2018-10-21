@@ -27,7 +27,7 @@ def nuky_test(image_generator):
 def main():
     src = []
     boxes = []
-    video = cv2.VideoCapture(1)
+    video = cv2.VideoCapture(0)
     while True:
         ok, frame = video.read()
         cv2.imshow('window', frame)
@@ -48,7 +48,7 @@ def main():
     params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2),
                                                c_factor=5, alpha=5, survivors_size=20,
                                                gen_size=1000, gen_random=100, max_iter=15,
-                                               range_regulator=np.array([0.1, 0.5, 0.5]))
+                                               range_regulator=np.array([0.2, 0.5, 0.5]))
     plt.plot(np.arange(len(scores)), scores)
     print(list(params))
     plt.show()
