@@ -23,16 +23,13 @@ class Camera:
         from a distance of 1m, used to find the [x z] location of objects
         :param port: the port of the camera
         """
-        self.constant = float(data.surface_constant)
+        self.constant = float(data.constant)
         self.data = data
-        self.view_range = data.fov
+        self.view_range = data.view_range
         self.capture = cv2.VideoCapture(port)
 
-    def __del__(self):
-        self.capture.release()
-
-    def __getattr__(self, item):
-        return self.capture.__getattribute__(item)
+    def __getattr__(self, attr):
+        return self.capture.__getattribute__(attr)  # this fucking works karel
 
 
 class CameraList:

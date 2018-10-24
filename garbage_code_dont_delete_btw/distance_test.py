@@ -297,5 +297,5 @@ def get_labeled_ball_images():
 
 
 if __name__ == '__main__':
-    get_labeled_ball_images()
+    detect_balls_by_radius()
 

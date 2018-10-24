@@ -51,8 +51,6 @@ def main():
         if cv2.waitKey(1) & 0xFF == ord('c'):
             cv2.destroyAllWindows()
             break
-    import IPython
-    IPython.embed()
 
 
 if __name__ == '__main__':
