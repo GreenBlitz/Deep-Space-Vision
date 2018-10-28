@@ -1,11 +1,12 @@
-import cv2
-import numpy as np
 from threading import Lock
+import cv2
 
-class Camera(cv2.VideoCapture):
+
+class Camera(object):
     """
     camera api used to measure distances and estimate locations by other functions
     """
+
     def __init__(self, port, const, angle):
         """
 
@@ -16,13 +17,16 @@ class Camera(cv2.VideoCapture):
         :param angle: the viewing range of the camera, computed as the arctan of half of the maximum height of an object seen
         from a distance of 1m, used to find the [x z] location of objects
         """
-        cv2.VideoCapture.__init__(self, port)
         self.constant = float(const)
         self.port = port
         self.view_range = angle
+        self.capture = cv2.VideoCapture(port)
 
     def __del__(self):
-        self.release()
+        self.capture.release()
+
+    def __getattr__(self, item):
+        return self.capture.__getattribute__(item)
 
 
 class CameraList:
@@ -32,6 +36,7 @@ class CameraList:
     and also a single camera to be the current camera used for every operation on the camera list
     as a single camera
     """
+
     def __init__(self, cams, constants, angles, select_cam=0):
         """
 
