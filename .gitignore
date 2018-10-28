@@ -1,0 +1,12 @@
+# compiled python files
+*.pyc
+
+
+# images
+*.png
+*.bmp
+*.jpg
+*.jpeg
+
+# pycharm setup files
+.idea/
