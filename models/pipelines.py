@@ -1,6 +1,7 @@
 from utils.pipeline import PipeLine
 from thresholds import *
 import numpy as np
+import funcs
 
 threshold_fuel = PipeLine(FUEL_THRESHOLD,
                           lambda frame: cv2.erode(frame, np.ones((3, 3))),
@@ -38,4 +39,6 @@ contours_to_circles = PipeLine(lambda cnts: map(lambda x: cv2.minEnclosingCircle
 
 contours_to_circles_sorted = contours_to_circles + (lambda rects: sorted(rects, key=lambda x: x[1], reverse=True))
 
-find_fuel_circles = fuel_contours_filtered + contours_to_circles_sorted
+filter_inner_circles = PipeLine(funcs.filter_inner_circles)
+
+find_fuel_circles = fuel_contours_filtered + contours_to_circles_sorted + filter_inner_circles

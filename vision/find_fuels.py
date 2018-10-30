@@ -15,5 +15,5 @@ def find_fuels(frame, camera_data):
             center, r = cv2.minEnclosingCircle(cnt)
             area = SQRT_PI*r
             d.append(FUEL.location2d_by_params(camera_data, area, center))
-    return d#ck
+    return d
 

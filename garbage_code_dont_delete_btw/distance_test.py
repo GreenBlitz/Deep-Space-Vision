@@ -5,6 +5,7 @@ from pipeline import PipeLine
 from image_objects import ImageObject
 array = np.array
 
+
 def crop_image(img, x, y, w, h):
     return img[y:y+h, x:x+w, :]
 

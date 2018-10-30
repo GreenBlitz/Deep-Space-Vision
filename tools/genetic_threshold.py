@@ -2,6 +2,7 @@ import cv2
 import random
 import numpy as np
 
+
 def prep_image(img):
     if len(img.shape) == 3:
         f = cv2.inRange(img, (1, 0, 0), (255, 255, 255))
@@ -12,8 +13,10 @@ def prep_image(img):
     s = f.mean()/255.0
     return np.vectorize(lambda x: (-1.0) if x == 0 else ((1.0-s)/s))(f.astype(float))
 
+
 def create_params(shape, factor):
     return np.random.rand(*shape)*factor
+
 
 def get_score(item, frame, bbox, func, reg):
     frametag = func(frame, item)
@@ -21,6 +24,7 @@ def get_score(item, frame, bbox, func, reg):
     #s = f.sum()
     #return s/f.size - (frametag.sum() - s)/(frametag.size - f.size) - reg*(np.abs(item[:,0] - item[:,1]).sum())
     return np.mean(frametag*bbox) - (reg*np.abs(item[:,0] - item[:,1])).sum()
+
 
 def create_child(sur, alpha, factor):
     child = np.sign(np.random.rand(*sur[0].shape))* 10**(-alpha * np.random.rand(*sur[0].shape))*factor
