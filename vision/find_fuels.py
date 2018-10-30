@@ -1,9 +1,8 @@
-import cv2
-import numpy as np
 from utils import *
 from models import fuel_contours_filtered, FUEL
 
 SQRT_PI = np.sqrt(np.pi)
+
 
 def find_fuels(frame, camera_data):
     """

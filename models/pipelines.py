@@ -37,3 +37,5 @@ contours_to_rects_sorted = contours_to_rects + (lambda rects: sorted(rects, key=
 contours_to_circles = PipeLine(lambda cnts: map(lambda x: cv2.minEnclosingCircle(x), cnts))
 
 contours_to_circles_sorted = contours_to_circles + (lambda rects: sorted(rects, key=lambda x: x[1], reverse=True))
+
+find_fuel_circles = fuel_contours_filtered + contours_to_circles_sorted
