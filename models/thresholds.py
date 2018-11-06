@@ -1,4 +1,4 @@
-from utils import Threashold
+from utils import Threshold
 FUEL_THRESHOLD = Threshold(
     [[33.46342507, 45.14846628], [90.4936124, 182.02390718], [129.49086936, 194.548855]],
     'HLS'
