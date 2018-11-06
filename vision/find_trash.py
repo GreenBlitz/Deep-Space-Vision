@@ -13,7 +13,7 @@ def find_trash(frame, camera_data):
 
     if len(rects) > 0:
         if rects[0][2]*rects[0][3] < rtag[3]*rtag[2]:
-            rtag = 0.99*rtag + 0.01*np.array(rects[0])
+            rtag = 0.9*rtag + 0.1*np.array(rects[0])
             rects[0] = tuple(list(rtag.astype(int)))
         else:
             rtag = rects[0]
