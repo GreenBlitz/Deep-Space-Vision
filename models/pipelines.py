@@ -2,6 +2,7 @@ from utils.pipeline import PipeLine
 from thresholds import *
 import numpy as np
 import funcs
+import cv2
 
 threshold_fuel = PipeLine(FUEL_THRESHOLD,
                           lambda frame: cv2.erode(frame, np.ones((3, 3))),
