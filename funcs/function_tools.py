@@ -1,5 +1,6 @@
 from functools import *
 
+
 def split_list(lst, f, amount=2):
     """
     splits the list into several list according to the function f
@@ -11,5 +12,6 @@ def split_list(lst, f, amount=2):
     :return: a tuple of all the lists created,
     """
     tmp = tuple([] for _ in range(amount))
-    map(lambda x: tmp[f(x)].append(x), lst)
+    for x in lst:
+        tmp[f(x)].append(x)
     return tmp
