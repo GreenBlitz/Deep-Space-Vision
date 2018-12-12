@@ -1,4 +1,3 @@
-from functools import *
 
 def split_list(lst, f, amount=2):
     """
@@ -10,6 +9,7 @@ def split_list(lst, f, amount=2):
     :param amount: the amount of lists to split the data to (2 by default)
     :return: a tuple of all the lists created,
     """
-    tmp = tuple([] for _ in range(amount))
-    map(lambda x: tmp[f(x)].append(x), lst)
-    return tmp
+    temp = tuple([] for _ in range(amount))
+    for i in lst:
+         temp[f(i)].append(i)
+    return temp
