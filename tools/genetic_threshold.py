@@ -27,13 +27,15 @@ def get_score(item, frame, bbox, func, reg):
 
 
 def create_child(sur, alpha, factor):
-    child = np.sign(np.random.rand(*sur[0].shape))* 10**(-alpha * np.random.rand(*sur[0].shape))*factor
+    child = np.sign(np.random.rand(*sur[0].shape) - 0.5) * 10**(-alpha * np.random.rand(*sur[0].shape))*factor
     for i in range(len(sur[0])):
         child[i] += random.choice(sur)[i]
     return child
 
 
-def find_optimized_parameters(function, images, bboxes, p_shape, gen_size=50, survivors_size=0, p_factor=255, alpha=50, max_iter=100, gen_random=5, c_factor=1, range_regulator=0.5):
+def find_optimized_parameters(function, images, bboxes, p_shape, gen_size=1000,
+                              survivors_size=20, p_factor=255, alpha=50, max_iter=100,
+                              gen_random=5, c_factor=1, range_regulator=0.5):
     gen = []
     all_scores = []
     best = None
