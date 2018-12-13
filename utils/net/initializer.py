@@ -33,3 +33,5 @@ def entry_change_callback(key, value, is_new):
 
 
 print(sd.getNumber('robot y', 'did not fucking work fuck everyone and especially fucking motion'))
+
+# fuck git
