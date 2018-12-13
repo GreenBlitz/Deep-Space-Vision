@@ -3,3 +3,4 @@ NETWORK_TABLE_IP = '10.45.90.2'
 
 VISION_TABLE_NAME = 'VisionTable'
 
+
