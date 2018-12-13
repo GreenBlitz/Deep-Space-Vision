@@ -22,7 +22,7 @@ def main():
         if k == ord('r'):
             bbox = cv2.selectROI('window', frame)
             ft = np.zeros(frame.shape[:-1])
-            ft[bbox[1]:bbox[1]+bbox[3],bbox[0]:bbox[0]+bbox[2]] = 1
+            ft[bbox[1]:bbox[1]+bbox[3], bbox[0]:bbox[0]+bbox[2]] = 1
             s = ft.mean()
             ft = np.vectorize(lambda x: -1 if x == 0 else (1-s)/s)(ft)
             #print(np.sum(ft))
@@ -33,7 +33,7 @@ def main():
             break
     params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2),
                                                c_factor=5, alpha=5, survivors_size=20,
-                                               gen_size=1000, gen_random=100, max_iter=30,
+                                               gen_size=1000, gen_random=100, max_iter=10,
                                                range_regulator=np.array([0.05, 0.2, 0.2]))
     plt.plot(np.arange(len(scores)), scores)
     print(map(list, params))
