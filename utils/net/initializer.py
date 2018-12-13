@@ -55,12 +55,6 @@ def net_init(ip=NETWORK_TABLES_IP, table_name=VISION_TABLE_NAME):
     NetworkTables.initialize(ip)
     vision_conn.set_table(NetworkTables.getTable(table_name))
 
-    #key_commands = {  # dict of lists of callback functions
-    #    'bash_command': [
-    #        lambda value, is_new: os.system(value)
-    #    ]
-    #}
-
     return vision_conn
 
 
