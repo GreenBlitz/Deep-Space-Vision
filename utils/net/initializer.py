@@ -40,7 +40,17 @@ def add_on_entry_change(key, func):
 
 
 def __entry_change_callback(key, value, is_new):
+    """
+    runs when an entry is changed on the vision table
+    :param key:
+    :param value:
+    :param is_new:
+    """
     for i in __key_commands[key]:
-        i(value, is_new)
+        try:
+            i(value)
+        except TypeError:
+            i(value, is_new)
+
 
 # fuck git
