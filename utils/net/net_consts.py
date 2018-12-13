@@ -1,0 +1,4 @@
+NETWORK_TABLES_IP = '10.45.90.20'
+
+VISION_TABLE_NAME = 'VisionTable'
+

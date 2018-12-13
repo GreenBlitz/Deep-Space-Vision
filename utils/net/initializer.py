@@ -1,37 +1,46 @@
 from networktables import NetworkTables
+from net_consts import *
 import os
 
-NetworkTables.initialize('10.45.90.20')
+vision_table = None
+__key_commands = None
 
 
-sd = NetworkTables.getTable('SmartDashboard')
+def net_init():
+    """
+    initializes all network values
+    """
+    global vision_table
+    global __key_commands
+    NetworkTables.initialize(NETWORK_TABLES_IP)
 
-NetworkTables.create()
+    vision_table = NetworkTables.getTable(VISION_TABLE_NAME)
 
-sd.putString('bash_command', 'la')
+    __key_commands = {  # dict of lists of callback functions
+        'bash_command': [
+            lambda value, is_new: os.system(value)
+        ]
+    }
 
-key_commands = { # dict of lists of callback functions
-    'bash_command': [
-        lambda value, is_new: os.system(value)
-    ]
-}
+    vision_table.addEntryListener(__entry_change_callback)
 
 
 def add_on_entry_change(key, func):
-    if key not in key_commands:
-        key_commands[key] = []
-    key_commands[key].append(func)
+    """
+    add a function to be called every time a specific entry is changed on the vision table
+    :param key
+    :param func:
+    """
+    if hasattr(key, "__iter__"):
+        for k in key:
+            add_on_entry_change(k, func)
+    if key not in __key_commands:
+        __key_commands[key] = []
+    __key_commands[key].append(func)
 
 
-def set_smart_dashboard_value(key, value):
-    pass # TODO create this function
-
-
-def entry_change_callback(key, value, is_new):
-    for i in key_commands[key]:
+def __entry_change_callback(key, value, is_new):
+    for i in __key_commands[key]:
         i(value, is_new)
-
-
-print(sd.getNumber('robot y', 'did not fucking work fuck everyone and especially fucking motion'))
 
 # fuck git
