@@ -1,7 +1,12 @@
 from networktables import NetworkTables
 from net_consts import *
 import os
+"""
 
+
+haha exdee i want to dieee reeeeeeeeeeeeeeee
+
+"""
 
 class TableConn:
     def __init__(self):
