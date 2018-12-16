@@ -1,34 +1,54 @@
 from networktables import NetworkTables
 from net_consts import *
-import os
 
 
-def initialize_values():
-    global key_commands
-    global vision_table
+class TableConn:
+    def __init__(self):
+        self.table = None
+        self.key_commands = {}
 
-    NetworkTables.initialize(NETWORK_TABLE_IP)
-    vision_table = NetworkTables.getTable(VISION_TABLE_NAME)
+    def set_table(self, table):
+        if self.table is not None:
+            self.table.removeEntryListener(self.__entry_change_callback)
+        self.table = table
+        self.table.addEntryListener(self.__entry_change_callback)
 
-    key_commands = {  # dict of lists of callback functions
-        'bash_command': [
-            lambda value, is_new: os.system(value)
-        ]
-    }
+    def get(self, key, default=None):
+        return self.table.getValue(key, default)
+
+    def set(self, key, value):
+        self.table.putValue(key, value)
+
+    def add_on_entry_change(self, func, *keys):
+        """
+        add a function to be called every time a specific entry is changed on the vision table
+        :param func:
+        :param keys:
+        """
+        for key in keys:
+            if key not in self.key_commands:
+                self.key_commands[key] = []
+            self.key_commands[key].append(func)
+
+    def __entry_change_callback(self, key, value, is_new):
+        """
+        runs when an entry is changed on the vision table
+        :param key:
+        :param value:
+        :param is_new:
+        """
+        for operation in self.key_commands[key]:
+            operation(is_new)
 
 
-def add_on_entry_change(key, func):
-    if key not in key_commands:
-        key_commands[key] = []
-    key_commands[key].append(func)
+def net_init(ip=NETWORK_TABLES_IP, table_name=VISION_TABLE_NAME):
+    """
+    initializes all network values
 
+    """
+    vision_conn = TableConn()
+    NetworkTables.initialize(ip)
+    vision_conn.set_table(NetworkTables.getTable(table_name))
 
-def set_network_table_value(key, value):
-
-    pass # TODO create this function
-
-
-def __entry_change_callback(key, value, is_new):
-    for i in key_commands[key]:
-        i(value, is_new)
+    return vision_conn
 

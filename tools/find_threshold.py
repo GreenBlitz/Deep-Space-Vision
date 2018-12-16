@@ -22,10 +22,9 @@ def main():
         if k == ord('r'):
             bbox = cv2.selectROI('window', frame)
             ft = np.zeros(frame.shape[:-1])
-            ft[bbox[1]:bbox[1]+bbox[3], bbox[0]:bbox[0]+bbox[2]] = 1
+            ft[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2]] = 1
             s = ft.mean()
-            ft = np.vectorize(lambda x: -1 if x == 0 else (1-s)/s)(ft)
-            #print(np.sum(ft))
+            ft = np.vectorize(lambda x: -1 if x == 0 else (1 - s) / s)(ft)
             boxes.append(ft)
             src.append(frame)
         if k == ord('c'):

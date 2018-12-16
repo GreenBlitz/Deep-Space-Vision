@@ -5,7 +5,7 @@ from pipeline import PipeLine
 
 
 class ImageObject:
-    def __init__(self, area, shape=None ,shape3d=None):
+    def __init__(self, area, shape=None, shape3d=None):
         """
         constructor of the image object
         which is an object on field
@@ -27,7 +27,7 @@ class ImageObject:
         :param frame: optional, a frame to be used instead of the next image from the camera
         :return: the norm of the vector between the camera and the object (in meters)
         """
-        return camera.constant*self.area/pipeline(camera.read()[1] if frame is None else frame)
+        return camera.data.constant*self.area/pipeline(camera.read()[1] if frame is None else frame)
 
     def location2d(self, camera, pipeline, frame=None):
         """

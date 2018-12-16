@@ -20,10 +20,7 @@ def create_params(shape, factor):
 
 def get_score(item, frame, bbox, func, reg):
     frametag = func(frame, item)
-    #f = frametag[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2]]
-    #s = f.sum()
-    #return s/f.size - (frametag.sum() - s)/(frametag.size - f.size) - reg*(np.abs(item[:,0] - item[:,1]).sum())
-    return np.mean(frametag*bbox) - (reg*np.abs(item[:,0] - item[:,1])).sum()
+    return np.mean(frametag*bbox) - (reg*np.abs(item[:, 0] - item[:, 1])).sum()
 
 
 def create_child(sur, alpha, factor):
@@ -33,7 +30,7 @@ def create_child(sur, alpha, factor):
     return child
 
 
-def find_optimized_parameters(function, images, bboxes, p_shape, gen_size=1000,
+def find_optimized_parameters(func, images, bboxes, p_shape, gen_size=1000,
                               survivors_size=20, p_factor=255, alpha=50, max_iter=100,
                               gen_random=5, c_factor=1, range_regulator=0.5):
     gen = []
@@ -48,7 +45,7 @@ def find_optimized_parameters(function, images, bboxes, p_shape, gen_size=1000,
         for i in gen:
             sum = 0
             for j, im in enumerate(images):
-                sum += get_score(i, im, bboxes[j], function, range_regulator)
+                sum += get_score(i, im, bboxes[j], func, range_regulator)
             scores.append([i, sum])
             all_scores[_] = max(all_scores[_], sum)
             if sum > max_score:
