@@ -19,7 +19,7 @@ def main():
         for i, c in enumerate(circles):
             cv2.circle(frame, (int(c[0][0]), int(c[0][1])), int(c[1]), (0, 255, 0), 2)
             cv2.circle(frame, (int(c[0][0]), int(c[0][1])), 2, (0, 0, 255), 2)
-            d = FUEL.location3d_by_params(camera, SQRT_PI*c[1], c[0])
+            d = FUEL.location3d_by_params(camera.data, SQRT_PI*c[1], c[0])
             cv2.putText(frame, str((d * 1000).astype(int).astype(float) / 1000), (int(c[0][0] - 75), int(c[0][1])),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 4)
             cv2.putText(frame, str((d*1000).astype(int).astype(float)/1000), (int(c[0][0]-75), int(c[0][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255))

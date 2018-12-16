@@ -15,8 +15,8 @@ def main():
         thr = threshold_fuel(frame)
         cv2.imshow('hello i is vision', thr)
         circles = find_fuel_circles(frame)
-        circles_locations = find_fuels(frame, camera)
-        trash_location = find_trash(frame, camera)
+        circles_locations = find_fuels(frame, camera.data)
+        trash_location = find_trash(frame, camera.data)
         trash_location += 0.20*trash_location/np.linalg.norm(trash_location) # center
         trash_location[1] -= 0.45
         for i, c in enumerate(circles):

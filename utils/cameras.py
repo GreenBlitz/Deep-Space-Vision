@@ -8,7 +8,7 @@ class CameraData:
         self.view_range = fov
 
 
-class Camera:
+class Camera(object):
     """
     camera api used to measure distances and estimate locations by other functions
     """
@@ -23,14 +23,20 @@ class Camera:
         from a distance of 1m, used to find the [x z] location of objects
         :param port: the port of the camera
         """
-        self.constant = float(data.constant)
         self.data = data
-        self.view_range = data.view_range
         self.capture = cv2.VideoCapture(port)
 
-    def __getattr__(self, attr):
-        return self.capture.__getattribute__(attr)  # this fucking works karel
+    def read(self):
+        return self.capture.read()
 
+    def get(self, item):
+        return self.capture.get(item)
+
+    def set(self, prop_id, value):
+        return self.capture.set(prop_id, value)
+
+    def release(self):
+        return self.capture.release()
 
 class CameraList:
     """
