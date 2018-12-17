@@ -4,6 +4,7 @@ from utils import *
 from models import *
 from vision import find_trash
 
+
 def main():
     camera = Camera(1, LIFECAM_STUDIO)
     vision_table = cvnet.net_init()
@@ -17,12 +18,12 @@ def main():
         vision_table.set('trash z', trash[2])
 
         vision_table.set('Distance', np.linalg.norm(trash))
-        vision_table.set('Angle', np.rad2deg(np.arctan(trash[0]/trash[2])))
-
+        vision_table.set('Angle', np.rad2deg(np.arctan(trash[0] / trash[2])))
 
         if cv2.waitKey(1) & 0xff == 27:
             cv2.destroyAllWindows()
             break
+
 
 if __name__ == '__main__':
     main()

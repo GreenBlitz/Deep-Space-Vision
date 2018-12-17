@@ -42,6 +42,7 @@ def rgb_threshold(frame, params):
     red, green, blue = params
     return cv2.inRange(frame, (red[0], green[0], blue[0]), (red[1], green[1], blue[1]))
 
+
 def bgr_threshold(frame, params):
     """
     thresholds the image according to RGB values
@@ -61,6 +62,7 @@ THRESHOLD_NAME_TABLE = {
     'HLS': hls_threshold,
     'HSV': hsv_threshold
 }
+
 
 class Threshold:
     def __init__(self, lst, thresh_type='HSV'):
@@ -82,4 +84,3 @@ class Threshold:
 
     def __call__(self, frame):
         return THRESHOLD_NAME_TABLE[self.type](frame, self.init)
-

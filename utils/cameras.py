@@ -38,6 +38,7 @@ class Camera(object):
     def release(self):
         return self.capture.release()
 
+
 class CameraList:
     """
     behaves as both a camera and a list of cameras

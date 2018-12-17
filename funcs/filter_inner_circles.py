@@ -1,6 +1,6 @@
-
 def is_circle_invalid(center1, r1, center2, r2):
-    return (center1[0] - center2[0])**2 + (center1[1] - center2[1])**2 < (r1+r2)**2
+    return (center1[0] - center2[0]) ** 2 + (center1[1] - center2[1]) ** 2 < (r1 + r2) ** 2
+
 
 def filter_inner_circles(circles):
     filtered_circles = []
@@ -14,4 +14,3 @@ def filter_inner_circles(circles):
             filtered_circles.append(circle)
 
     return filtered_circles
-

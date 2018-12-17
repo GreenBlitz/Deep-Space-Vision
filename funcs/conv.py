@@ -15,19 +15,19 @@ def sharpen(im):
 
 
 def blur(im):
-    return cv2.filter2D(im, -1, np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])/9)
+    return cv2.filter2D(im, -1, np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]) / 9)
 
 
 def blue(im):
-    return im[:,:,0]
+    return im[:, :, 0]
 
 
 def green(im):
-    return im[:,:,1]
+    return im[:, :, 1]
 
 
 def red(im):
-    return im[:,:,2]
+    return im[:, :, 2]
 
 
 def gray(im):

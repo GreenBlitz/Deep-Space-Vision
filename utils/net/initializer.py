@@ -52,13 +52,4 @@ def net_init(ip=NETWORK_TABLES_IP, table_name=VISION_TABLE_NAME):
 
     return vision_conn
 
-
-
-
-
-
-
-
-
-
 # fuck this git
