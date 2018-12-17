@@ -32,3 +32,7 @@ def red(im):
 
 def gray(im):
     return cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+
+
+def crop(im, x, y, w, h):
+    return im[y:y+h, x:x+w, :]

@@ -7,9 +7,7 @@ rtag = np.array([0, 0, 0, 0])
 def find_trash(frame, camera_data):
     global rtag
     rtag = np.array(rtag)
-    thr = threshold_trash(frame)
-    cnts = sorted_contours(thr)
-    rects = contours_to_rects_sorted(cnts)
+    rects = (threshold_trash + sorted_contours + contours_to_rects_sorted)(frame)
 
     if len(rects) > 0:
         if rects[0][2] * rects[0][3] < rtag[3] * rtag[2]:

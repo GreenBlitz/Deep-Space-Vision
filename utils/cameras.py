@@ -111,7 +111,5 @@ class CameraList:
             return self.camera.get(arg)
 
     def read_all(self):
-        frames = []
-        for cap in self.cameras.values():
-            frames.append(cap.read()[1])
-        return frames
+        with self.lock:
+            return {port: self.cameras[port].read()[1] for port in self.cameras}
