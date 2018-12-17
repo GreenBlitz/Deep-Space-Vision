@@ -24,6 +24,7 @@ class Camera(object):
         :param port: the port of the camera
         """
         self.data = data
+        self.port = port
         self.capture = cv2.VideoCapture(port)
 
     def read(self):
@@ -47,16 +48,16 @@ class CameraList:
     as a single camera
     """
 
-    def __init__(self, cams, cameradata, select_cam=0):
+    def __init__(self, ports, cameras_data, select_cam=0):
         """
-        :param cams: the ports of the cameras
-        :param cameradata: the camera data object describing each port
+        :param ports: the ports of the cameras
+        :param cameras_data: the camera data object describing each port
         :param select_cam: optional, an initial camera to be selected
         """
         self.cameras = {}
         self.camera = None
-        for i, c in enumerate(set(cams)):
-            self.cameras[c] = (Camera(c, cameradata[i]))
+        for i, c in enumerate(set(ports)):
+            self.cameras[c] = (Camera(c, cameras_data[i]))
         self.lock = Lock()
         self.camera = self.cameras[select_cam] if select_cam in self.cameras else None
 
@@ -79,26 +80,38 @@ class CameraList:
             if len(args) == 0:
                 return self.camera.read()
             images = []
-            for i in args:
-                images.append(self.cameras[i].read())
+            for port in args:
+                images.append(self.cameras[port].read())
             return images
 
-    def add_camera(self, index, data):
+    def add_new_camera(self, port, data):
         with self.lock:
-            self.cameras[index] = Camera(index, data)
+            self.cameras[port] = Camera(port, data)
 
-    def __getattr__(self, item):
-        return self.camera.__getattribute__(item)
+    def add_camera(self, cam):
+        with self.lock:
+            self.camera[cam.port] = cam
 
     def release(self):
         with self.lock:
-            del self.cameras[self.camera.index]
+            del self.cameras[self.camera.port]
             self.camera = None
+
+    def __del__(self):
+        with self.lock:
+            for cap in self.cameras.values():
+                cap.release()
 
     def default(self):
         with self.lock:
-            self.camera = self.cameras[list(self.cameras)[0]]
+            self.camera = self.cameras[self.cameras.keys()[0]]
 
     def get(self, arg):
         with self.lock:
             return self.camera.get(arg)
+
+    def read_all(self):
+        frames = []
+        for cap in self.cameras.values():
+            frames.append(cap.read()[1])
+        return frames
