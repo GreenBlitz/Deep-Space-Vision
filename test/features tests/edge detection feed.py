@@ -2,9 +2,11 @@ from funcs import *
 from utils import *
 from models import LIFECAM_STUDIO
 
+
 def fix_img255(im):
-    #return 255*(im/np.amax(im))
+    # return 255*(im/np.amax(im))
     return gray(im)
+
 
 def main():
     camera = Camera(0, LIFECAM_STUDIO)
@@ -17,6 +19,7 @@ def main():
         if k == ord('c') or k == ord('C'):
             cv2.destroyAllWindows()
             break
+
 
 if __name__ == "__main__":
     main()

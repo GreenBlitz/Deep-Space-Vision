@@ -1,5 +1,5 @@
 from utils.pipeline import PipeLine
-from thresholds import *
+from thresholds_consts import *
 import numpy as np
 import funcs
 import cv2
@@ -30,11 +30,11 @@ contour_to_polygon = PipeLine(lambda cnt: (cnt, 0.05 * cv2.arcLength(cnt, True))
                               lambda polydp: map(tuple, polydp))
 
 contour_center = PipeLine(lambda cnt: cv2.moments(cnt),
-                          lambda m: (int(m['m10']/(m['m00'] + 0.0000001)), int(m['m01']/(m['m00'] + 0.0000001))))
+                          lambda m: (int(m['m10'] / (m['m00'] + 0.0000001)), int(m['m01'] / (m['m00'] + 0.0000001))))
 
 contours_to_rects = PipeLine(lambda cnts: map(lambda x: cv2.boundingRect(x), cnts))
 
-contours_to_rects_sorted = contours_to_rects + (lambda rects: sorted(rects, key=lambda x: x[2]*x[3], reverse=True))
+contours_to_rects_sorted = contours_to_rects + (lambda rects: sorted(rects, key=lambda x: x[2] * x[3], reverse=True))
 
 contours_to_circles = PipeLine(lambda cnts: map(lambda x: cv2.minEnclosingCircle(x), cnts))
 
