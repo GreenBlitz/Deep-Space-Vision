@@ -1,8 +1,6 @@
 import cv2
 import numpy as np
 
-from pipeline import PipeLine
-
 
 class ImageObject:
     def __init__(self, area, shape=None, shape3d=None):

@@ -1,4 +1,5 @@
 from networktables import NetworkTables
+
 from net_consts import *
 
 

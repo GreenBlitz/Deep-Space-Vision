@@ -1,8 +1,9 @@
-from utils.pipeline import PipeLine
-from thresholds_consts import *
-import numpy as np
-import funcs
 import cv2
+import numpy as np
+
+import funcs
+from thresholds_consts import *
+from utils.pipeline import PipeLine
 
 threshold_fuel = PipeLine(FUEL_THRESHOLD,
                           lambda frame: cv2.erode(frame, np.ones((3, 3))),

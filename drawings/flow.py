@@ -1,5 +1,4 @@
 import cv2
-import numpy as np
 
 
 def draw_flow(frame, contour, color=(255, 0, 0)):

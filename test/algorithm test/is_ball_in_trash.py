@@ -1,8 +1,8 @@
+import winsound
+
 from models import *
 from utils import *
 from vision import *
-from drawings import *
-import winsound
 
 
 def main():

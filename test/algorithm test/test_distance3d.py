@@ -1,8 +1,5 @@
 from models import *
 from utils import *
-from vision import *
-from drawings import *
-from funcs import *
 
 
 def main():

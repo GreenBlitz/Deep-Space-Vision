@@ -1,7 +1,8 @@
+from collections import deque
+
 from models import *
 from utils import *
 from vision import *
-from collections import deque
 
 
 def is_rect_colliding(r1, r2):
