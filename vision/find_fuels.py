@@ -7,7 +7,6 @@ def find_fuels(frame, camera_data):
     """
     circles = find_fuel_circles(frame)
     d = []
-
     for circ in circles:
         center, r = circ
         area = SQRT_PI * r
