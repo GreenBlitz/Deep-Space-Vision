@@ -1,7 +1,8 @@
 import cv2
-import numpy as np
-from genetic_threshold import find_optimized_parameters
 import matplotlib.pyplot as plt
+import numpy as np
+
+from genetic_threshold import find_optimized_parameters
 
 
 def threshold(frame, params):

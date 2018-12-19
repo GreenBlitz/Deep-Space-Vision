@@ -1,6 +1,6 @@
 from funcs import *
-from utils import *
 from models import LIFECAM_STUDIO
+from utils import *
 
 
 def fix_img255(im):
