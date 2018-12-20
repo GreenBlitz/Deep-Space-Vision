@@ -39,6 +39,14 @@ class Camera(object):
     def release(self):
         return self.capture.release()
 
+    @property
+    def view_range(self):
+        return self.data.view_range
+
+    @property
+    def constant(self):
+        return self.data.constant
+
 
 class CameraList:
     """
