@@ -5,7 +5,7 @@ from vision import find_trash
 
 
 def main():
-    camera = Camera(1, LIFECAM_STUDIO)
+    camera = Camera(PORT, LIFECAM_STUDIO)
     vision_table = cvnet.net_init()
     camera.set(cv2.CAP_PROP_EXPOSURE, 1)
     while True:

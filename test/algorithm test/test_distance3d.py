@@ -3,7 +3,7 @@ from utils import *
 
 
 def main():
-    camera = Camera(0, LIFECAM_STUDIO)
+    camera = Camera(PORT, LIFECAM_STUDIO)
     time = 0
     while True:
         time += 1

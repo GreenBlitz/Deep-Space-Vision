@@ -29,7 +29,7 @@ def find_ball_vel():
 
 
 def main():
-    camera = Camera(0, LIFECAM_STUDIO)
+    camera = Camera(PORT, LIFECAM_STUDIO)
     rtag = np.array([0, 0, 0, 0])
     while True:
         ok, frame = camera.read()

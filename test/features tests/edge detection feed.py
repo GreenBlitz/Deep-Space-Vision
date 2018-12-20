@@ -1,5 +1,5 @@
 from funcs import *
-from models import LIFECAM_STUDIO
+from models import LIFECAM_STUDIO, PORT
 from utils import *
 
 
@@ -9,7 +9,7 @@ def fix_img255(im):
 
 
 def main():
-    camera = Camera(0, LIFECAM_STUDIO)
+    camera = Camera(PORT, LIFECAM_STUDIO)
     while True:
         ok, frame = camera.read()
         cv2.imshow("feed", frame)

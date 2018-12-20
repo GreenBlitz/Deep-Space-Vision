@@ -5,16 +5,23 @@ from vision import *
 
 
 def main():
-    camera = Camera(0, LIFECAM_STUDIO)
+    camera = Camera(PORT, LIFECAM_STUDIO)
     table_conn = net_init()
-    alpha_delta_are_the_best_alpha = 100
+    alpha = 900/2.53
+
     while True:
         ok, frame = camera.read()
         trash = find_trash(frame, camera)
         trash_distance = np.linalg.norm(trash)
+        cv2.imshow('feed', frame)
         table_conn.set('Trash::Distance', trash_distance)
-        desired_rpm = alpha_delta_are_the_best_alpha*trash_distance
+        desired_rpm = alpha * trash_distance
+        print desired_rpm
         table_conn.set('Trash::DesiredRPM', desired_rpm)
+
+        if cv2.waitKey(1) & 0xFF == ord('c'):
+            cv2.destroyAllWindows()
+            break
 
 
 if __name__ == '__main__':

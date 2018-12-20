@@ -7,7 +7,7 @@ from vision import *
 
 def main():
     # print "init"
-    camera = Camera(0, LIFECAM_STUDIO)
+    camera = Camera(PORT, LIFECAM_STUDIO)
     time = 0
     tracking_circles = []
     while True:

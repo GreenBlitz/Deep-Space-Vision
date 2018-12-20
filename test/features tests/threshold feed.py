@@ -1,13 +1,11 @@
 from models import *
 from utils import *
 
-current_threshold = Threshold([[40.46404285229044, 54.679546252804016],
-                               [78.49554118824669, 141.7333240444942],
-                               [86.49577698856463, 230.71946868865734]], 'HLS')
+current_threshold = TRASH_THRESHOLD
 
 
 def main():
-    camera = Camera(0, LIFECAM_STUDIO)
+    camera = Camera(PORT, LIFECAM_STUDIO)
     while True:
         ok, frame = camera.read()
         cv2.imshow("feed", frame)
