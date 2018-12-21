@@ -6,22 +6,27 @@ from vision import *
 
 def main():
     camera = Camera(PORT, LIFECAM_STUDIO)
-    table_conn = net_init()
-    alpha = 900/2.53
+    camera.set_exposure(1)
+    table_conn = net_init(ip='10.45.90.2')
+    alpha = 500
 
     while True:
         ok, frame = camera.read()
         trash = find_trash(frame, camera)
         trash_distance = np.linalg.norm(trash)
+        trash_angle = np.rad2deg(trash[0]/trash[2])
         cv2.imshow('feed', frame)
+        cv2.imshow('threshold', TRASH_THRESHOLD(frame))
         table_conn.set('Trash::Distance', trash_distance)
         desired_rpm = alpha * trash_distance
-        print desired_rpm
-        table_conn.set('Trash::DesiredRPM', desired_rpm)
-
-        if cv2.waitKey(1) & 0xFF == ord('c'):
+        table_conn.set('Trash::RPM', desired_rpm)
+        k = cv2.waitKey(1) & 0xFF
+        if k == ord('c'):
             cv2.destroyAllWindows()
             break
+        if k == ord('u'):
+            print 'old alpha -> %d' % alpha
+            alpha = float(raw_input('new alpha -> '))
 
 
 if __name__ == '__main__':

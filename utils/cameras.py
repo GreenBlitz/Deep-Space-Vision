@@ -40,6 +40,9 @@ class Camera(object):
     def release(self):
         return self.capture.release()
 
+    def set_exposure(self, exposure):
+        self.capture.set(cv2.CAP_PROP_EXPOSURE, exposure)
+
     @property
     def view_range(self): return self.data.view_range
 
