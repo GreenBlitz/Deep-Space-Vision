@@ -136,7 +136,7 @@ class ImageObject:
         frame_center = camera.get(cv2.CAP_PROP_FRAME_WIDTH), camera.get(cv2.CAP_PROP_FRAME_HEIGHT)
         frame_center = np.array(frame_center) / 2
         x, y = np.array(center) - frame_center
-        alpha = x * camera.view_range / frame_center[0]
-        beta = y * camera.view_range / frame_center[1]
+        alpha = x * camera.data.view_range / frame_center[0]
+        beta = y * camera.data.view_range / frame_center[1]
         return np.array([np.sin(alpha), np.sin(beta), np.sqrt(1 - np.sin(alpha) ** 2 - np.sin(beta) ** 2)]) \
                * self.distance_by_params(camera, area)
