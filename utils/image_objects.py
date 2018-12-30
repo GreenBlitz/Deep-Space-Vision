@@ -10,7 +10,7 @@ class ImageObject:
         :param area: the square root of the area of the object (in squared meters), float
         :param shape: optional, the shape of the object (2d)
         used to test if a recorded object is the object represented by the image object
-        :param three_d_shape: the three dimensional shape of the object
+        :param shape3d: the three dimensional shape of the object
         used to estimate things like the center of the actual object
         """
         self.area = area

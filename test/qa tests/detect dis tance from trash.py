@@ -2,21 +2,19 @@ import utils.net as cvnet
 from models import *
 from utils import *
 from vision import find_trash
+import time
 
 
 def main():
     camera = Camera(PORT, LIFECAM_STUDIO)
     vision_table = cvnet.net_init()
     camera.set(cv2.CAP_PROP_EXPOSURE, 1)
-    time = 0
-    d = 0
     while True:
 
-        time += 1
         ok, frame = camera.read()
 
         cv2.imshow('feed', frame)
-        cv2.imshow('threashhold', TRASH_THRESHOLD(frame))
+        cv2.imshow('threshold', TRASH_THRESHOLD(frame))
         trash = find_trash(frame, camera)
 
         vision_table.set('trash x', trash[0])
@@ -30,10 +28,7 @@ def main():
 
         vision_table.set('Trash::Distance', distance)
 
-        if np.abs(d - np.linalg.norm(trash)) >= 0.15:
-            print "Trash distance is: " + str(np.linalg.norm(trash)) + " meters"
-
-        d = np.linalg.norm(trash)
+        print time.time()
 
         if cv2.waitKey(1) & 0xff == 27:
             cv2.destroyAllWindows()

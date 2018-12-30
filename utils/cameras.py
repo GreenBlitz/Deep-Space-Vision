@@ -9,7 +9,7 @@ class CameraData:
         self.view_range = fov
 
 
-class Camera(object):
+class Camera:
     """
     camera api used to measure distances and estimate locations by other functions
     """
