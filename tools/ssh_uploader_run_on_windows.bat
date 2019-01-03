@@ -1,0 +1,1 @@
+wsl python3 ssh_uploader.py
