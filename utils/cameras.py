@@ -43,6 +43,12 @@ class Camera:
     def set_exposure(self, exposure):
         self.capture.set(cv2.CAP_PROP_EXPOSURE, exposure)
 
+    def toggle_auto_exposure(self, auto=None):
+        if auto is None:
+            self.capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, ~self.capture.get(cv2.CAP_PROP_APERTURE))
+        else:
+            self.capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
+
     @property
     def view_range(self): return self.data.view_range
 

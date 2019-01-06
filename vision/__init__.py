@@ -1,2 +1,3 @@
-from find_fuels import find_fuels
-from find_trash import find_trash
+from object_finder import ObjectFinder
+from circle_finder import CircleFinder
+from rect_finder import RectFinder

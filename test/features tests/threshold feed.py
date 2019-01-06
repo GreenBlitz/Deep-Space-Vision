@@ -1,7 +1,7 @@
 from models import *
 from utils import *
 
-current_threshold = TRASH_THRESHOLD
+current_threshold = threshold_hatch_panel
 
 
 def main():
