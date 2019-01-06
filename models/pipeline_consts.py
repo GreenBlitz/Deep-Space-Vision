@@ -24,6 +24,8 @@ threshold_hatch_panel = PipeLine(HATCH_PANEL_THRESHOLD,
                                  lambda frame: cv2.erode(frame, np.ones((3, 3))),
                                  lambda frame: cv2.dilate(frame, np.ones((5, 5)), iterations=3))
 
+threshold_vision_target = PipeLine(VISION_TARGET_THRESHOLD)
+
 # lambda frame: cv2.erode(frame, np.ones((2, 2)), iterations=4),
 #                                 lambda frame: cv2.dilate(frame, np.ones((5, 5)), iterations=20),
 #                                lambda frame: cv2.erode(frame, np.ones((5, 5)), iterations=10))
@@ -48,9 +50,15 @@ contours_to_circles = PipeLine(lambda cnts: map(lambda x: cv2.minEnclosingCircle
 
 contours_to_circles_sorted = contours_to_circles + (lambda rects: sorted(rects, key=lambda x: x[1], reverse=True))
 
-contour_to_polygon = PipeLine(lambda cnt: (cnt, 0.05 * cv2.arcLength(cnt, True)),
-                              lambda cnt0_eps1: cv2.approxPolyDP(cnt0_eps1[0], cnt0_eps1[1], True),
-                              lambda polydp: map(lambda x: x[0], polydp),
-                              lambda polydp: map(tuple, polydp))
+contours_to_rotated_rects = PipeLine(lambda cnts: map(lambda x: cv2.minAreaRect(x), cnts))
+
+contours_to_rotated_rects_sorted = contours_to_rotated_rects + PipeLine(
+    lambda rects: sorted(rects, key=lambda x: x[1][0] * x[1][1]))
+
+contours_to_polygons = PipeLine(lambda cnts: map(lambda cnt: (cnt, 0.05 * cv2.arcLength(cnt, True)), cnts),
+                                lambda cnts: map(lambda cnt0_eps1: cv2.approxPolyDP(cnt0_eps1[0], cnt0_eps1[1], True),
+                                                 cnts),
+                                lambda polydps: map(lambda polydp: map(lambda x: x[0], polydp), polydps),
+                                lambda polydps: map(lambda polydp: map(tuple, polydp), polydps))
 
 filter_inner_circles = PipeLine(funcs.filter_inner_circles)

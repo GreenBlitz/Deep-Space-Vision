@@ -1,7 +1,7 @@
 from models import *
 from utils import *
 
-current_threshold = threshold_hatch_panel
+current_threshold = VISION_TARGET_THRESHOLD
 
 
 def main():

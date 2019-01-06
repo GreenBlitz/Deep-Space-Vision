@@ -28,3 +28,8 @@ HATCH_PANEL_THRESHOLD = Threshold(
     [[18, 34], [32, 97], [134, 254]],
     'HLS'
 )
+
+VISION_TARGET_THRESHOLD = Threshold(
+    [[30, 79], [113, 234], [0, 55]],
+    'BGR'
+)

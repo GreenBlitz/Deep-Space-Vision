@@ -129,3 +129,24 @@ class CameraList:
     def read_all(self):
         with self.lock:
             return {port: self.cameras[port].read()[1] for port in self.cameras}
+
+    def set(self, prop_id, value):
+        with self.lock:
+            return self.camera.set(prop_id, value)
+
+    def set_exposure(self, exposure):
+        with self.lock:
+            self.camera.set(cv2.CAP_PROP_EXPOSURE, exposure)
+
+    def toggle_auto_exposure(self, auto=None):
+        with self.lock:
+            if auto is None:
+                self.camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, ~self.camera.get(cv2.CAP_PROP_APERTURE))
+            else:
+                self.camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
+
+    @property
+    def view_range(self): return self.camera.view_range
+
+    @property
+    def constant(self): return self.camera.constant

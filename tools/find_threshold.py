@@ -7,7 +7,7 @@ from genetic_threshold import find_optimized_parameters
 
 
 def threshold(frame, params):
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HLS)
+    #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HLS)
     red, green, blue = params
     return cv2.inRange(frame, (red[0], green[0], blue[0]), (red[1], green[1], blue[1]))
 
@@ -16,7 +16,7 @@ def main():
     src = []
     boxes = []
     video = cv2.VideoCapture(PORT)
-    video.set(cv2.CAP_PROP_EXPOSURE, 0.4)
+    video.set(cv2.CAP_PROP_EXPOSURE, -13)
     while True:
         ok, frame = video.read()
         cv2.imshow('window', frame)
