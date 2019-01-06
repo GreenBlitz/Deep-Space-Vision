@@ -7,6 +7,7 @@ def main():
 
     time = 0
     camera.toggle_auto_exposure(1)
+    camera.set_exposure(-4)
     while True:
         time += 1
         ok, frame = camera.read()

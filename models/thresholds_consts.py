@@ -24,8 +24,9 @@ CARGO_THRESHOLD = Threshold(
     'HLS'
 )
 
+# [[18, 34], [32, 97], [134, 254]],
 HATCH_PANEL_THRESHOLD = Threshold(
-    [[18, 34], [32, 97], [134, 254]],
+    [[18, 57], [108, 139], [163, 246]],
     'HLS'
 )
 
