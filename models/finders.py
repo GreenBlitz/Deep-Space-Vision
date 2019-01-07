@@ -14,7 +14,6 @@ find_hatch_panel = CircleFinder(threshold_hatch_panel, HATCH_PANEL)
 
 find_vision_target = RotatedRectFinder(threshold_vision_target, VISION_TARGET)
 
-
 # non standard object
 
 find_hatch = HatchFinder(0.2434701650721714)

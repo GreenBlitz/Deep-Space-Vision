@@ -21,8 +21,8 @@ threshold_cargo = PipeLine(CARGO_THRESHOLD,
                            lambda frame: cv2.dilate(frame, np.ones((5, 5)), iterations=6))
 
 threshold_hatch_panel = PipeLine(HATCH_PANEL_THRESHOLD,
-                                 lambda frame: cv2.dilate(frame, np.ones((5, 5)), iterations=3),
-                                 lambda frame: cv2.erode(frame, np.ones((3, 3))))
+                                 lambda frame: cv2.erode(frame, np.ones((3, 3)), iterations=1),
+                                 lambda frame: cv2.dilate(frame, np.ones((3, 3)), iterations=1))
 
 threshold_vision_target = PipeLine(VISION_TARGET_THRESHOLD)
 

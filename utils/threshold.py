@@ -10,6 +10,7 @@ def hls_threshold(frame, params):
                                                  [smin smax]
     :return: binary threshold image
     """
+
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HLS)
     red, green, blue = params
     return cv2.inRange(frame, (red[0], green[0], blue[0]), (red[1], green[1], blue[1]))
