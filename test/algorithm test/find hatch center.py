@@ -5,6 +5,7 @@ from utils import *
 def main():
     camera = Camera(PORT, MICROSOFT_CAM)
     camera.set_exposure(-13)
+
     while True:
         ok, frame = camera.read()
         vts = (threshold_vision_target + find_contours + sort_contours + filter_contours)(frame)
