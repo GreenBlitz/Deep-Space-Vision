@@ -1,6 +1,6 @@
 from vision import *
-from pipeline_consts import *
-from image_objects_consts import *
+from .pipeline_consts import *
+from .image_objects_consts import *
 
 # standard objects
 

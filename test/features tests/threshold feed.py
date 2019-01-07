@@ -3,6 +3,7 @@ from utils import *
 
 current_threshold = threshold_hatch_panel
 
+
 def main():
     camera = Camera(PORT, LIFECAM_STUDIO)
     camera.set_exposure(-6)

@@ -16,7 +16,7 @@ def main():
     src = []
     boxes = []
     video = cv2.VideoCapture(PORT)
-    video.set(cv2.CAP_PROP_EXPOSURE, 0.4)
+    video.set(cv2.CAP_PROP_EXPOSURE, -6)
     src_path = raw_input("enter path to file (stop to exit): ")
     if src_path != "stop":
         src_fix_path = raw_input("enter path to fixed file: ")
@@ -30,7 +30,7 @@ def main():
             src_fix_path = raw_input("enter path to fixed file: ")
     params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2),
                                                c_factor=5, alpha=5, survivors_size=20,
-                                               gen_size=1000, gen_random=100, max_iter=10,
+                                               gen_size=1000, gen_random=100, max_iter=15,
                                                range_regulator=np.array([0.1, 0.4, 0.4]))
     plt.plot(np.arange(len(scores)), scores)
     print(map(list, params.astype(int)))

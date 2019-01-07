@@ -1,4 +1,4 @@
-from object_finder import ObjectFinder
+from .object_finder import ObjectFinder
 from models import *
 
 

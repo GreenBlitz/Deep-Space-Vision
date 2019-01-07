@@ -6,7 +6,7 @@ class ThresholdGroup:
         self.thresholds = list(thresholds)
 
     def __call__(self, frame):
-        return reduce(lambda th_frame, threshold: cv2.bitwise_or(th_frame, threshold(frame)), self.thresholds)
+        return reduce(lambda th_frame, threshold: cv2.bitwise_or(th_frame, threshold(frame)), self.thresholds, 0.0)
 
     def __add__(self, other):
         if isinstance(other, ThresholdGroup):

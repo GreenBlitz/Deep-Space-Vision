@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 import funcs
-from thresholds_consts import *
+from .thresholds_consts import *
 from utils.pipeline import PipeLine
 
 # THRESHOLDS
