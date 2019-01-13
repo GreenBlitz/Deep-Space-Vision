@@ -122,8 +122,7 @@ class ImageObject:
         x, y = np.array(vp) - frame_center
         alpha = x * camera.view_range / frame_center[0]
         beta = y * camera.view_range / frame_center[1]
-        return np.array([np.sin(alpha), np.sin(beta), np.sqrt(1 - np.sin(alpha) ** 2 - np.sin(beta) ** 2)]) \
-               * self.distance_by_contours(camera, cnt)
+        return np.array([np.sin(alpha), np.sin(beta), np.sqrt(1 - np.sin(alpha) ** 2 - np.sin(beta) ** 2)]) * self.distance_by_contours(camera, cnt)
 
     def location3d_by_params(self, camera, area, center):
         """
@@ -138,5 +137,4 @@ class ImageObject:
         x, y = np.array(center) - frame_center
         alpha = x * camera.data.view_range / frame_center[0]
         beta = y * camera.data.view_range / frame_center[1]
-        return np.array([np.sin(alpha), np.sin(beta), np.sqrt(1 - np.sin(alpha) ** 2 - np.sin(beta) ** 2)]) \
-               * self.distance_by_params(camera, area)
+        return np.array([np.sin(alpha), np.sin(beta), np.sqrt(1 - np.sin(alpha) ** 2 - np.sin(beta) ** 2)]) * self.distance_by_params(camera, area)
