@@ -6,7 +6,7 @@ from utils import *
 
 def main():
     camera = Camera(PORT, LIFECAM_STUDIO)
-    i = 0
+    i = 7
     while True:
         ok, frame = camera.read()
         cv2.imshow("feed", frame)
