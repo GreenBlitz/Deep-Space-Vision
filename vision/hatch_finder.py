@@ -1,17 +1,14 @@
-from .object_finder import ObjectFinder
+from .rotated_rect_finder import RotatedRectFinder
 from models import *
 
 
-class HatchFinder(ObjectFinder):
-    def __init__(self, distance):
-        ObjectFinder.__init__(self, 0, 0)
-        self.distance = distance
-        self.__vector_distance = np.array([0, distance, 0])
+class HatchFinder(RotatedRectFinder):
+    def __init__(self, threshold_func, object_descriptor, area_scalar=1.0):
+        RotatedRectFinder.__init__(self, threshold_func, object_descriptor, area_scalar)
 
     def __call__(self, frame, camera):
         try:
-            polys = (threshold_vision_target + find_contours + filter_contours + sort_contours + contours_to_polygons)(
-                frame)
+            polys = self.__full_pipeline(frame)
             poly1, poly2 = polys[0], polys[1]
             poly1 = sorted(poly1, key=lambda point: point[1])
             poly2 = sorted(poly2, key=lambda point: point[1])
