@@ -17,7 +17,7 @@ NUMBER_OF_CAMERAS = 2
 
 def main():
     algo_lock = Lock()
-    current_algorithm = [lambda x: 0]
+    current_algorithm = [lambda x, y: 0]
 
     cameras = CameraList(range(NUMBER_OF_CAMERAS), [LIFECAM_STUDIO, LIFECAM_3000])
 
@@ -34,6 +34,7 @@ def main():
 
     while True:
         try:
+            sys.stdout.write(conn.get('algorithm', ""))
             with algo_lock:
                 current_algorithm[0](cameras, conn)
         except VisionWarning as vw:

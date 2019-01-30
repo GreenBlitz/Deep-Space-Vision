@@ -6,6 +6,7 @@ class PolygonFinder(ObjectFinder):
     def __init__(self, threshold_func, object_descriptor, area_scalar=1.0):
         ObjectFinder.__init__(self, threshold_func, object_descriptor)
         self.__full_pipeline = (threshold_func +
+                                find_contours +
                                 filter_contours +
                                 sort_contours)
         self.area_scalar = area_scalar
