@@ -1,12 +1,16 @@
 from threading import Lock
-
+from copy import deepcopy
 import cv2
+import numpy as np
 
 
 class CameraData:
     def __init__(self, surface_constant, fov):
         self.constant = surface_constant
         self.view_range = fov
+
+    def __cmp__(self, other):
+        return self.constant == other.constant and self.view_range == other.view_range
 
 
 class Camera:
@@ -24,7 +28,7 @@ class Camera:
         from a distance of 1m, used to find the [x z] location of objects
         :param port: the port of the camera
         """
-        self.data = data
+        self.data = deepcopy(data)
         self.port = port
         self.capture = cv2.VideoCapture(port)
 
@@ -43,11 +47,20 @@ class Camera:
     def set_exposure(self, exposure):
         self.capture.set(cv2.CAP_PROP_EXPOSURE, exposure)
 
-    def toggle_auto_exposure(self, auto=None):
-        if auto is None:
-            self.capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, ~self.capture.get(cv2.CAP_PROP_APERTURE))
-        else:
-            self.capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
+    def toggle_auto_exposure(self, auto=1):
+        self.capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
+
+    def resize(self, x_factor, y_factor):
+        assert x_factor > 0 and y_factor > 0
+        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.capture.get(cv2.CAP_PROP_FRAME_WIDTH) * x_factor)
+        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT) * y_factor)
+        self.data.constant *= np.sqrt(x_factor * y_factor)
+
+    def set_frame_size(self, width, height):
+        assert width > 0 and height > 0
+        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        self.data.constant = np.sqrt(width * height)
 
     @property
     def view_range(self): return self.data.view_range
@@ -92,13 +105,14 @@ class CameraList:
             del self.cameras[key]
 
     def read(self, *args):
-        with self.lock:
-            if len(args) == 0:
+        if len(args) == 0:
+            with self.lock:
                 return self.camera.read()
-            images = []
+        images = []
+        with self.lock:
             for port in args:
                 images.append(self.cameras[port].read())
-            return images
+        return images
 
     def add_new_camera(self, port, data):
         with self.lock:
@@ -146,7 +160,30 @@ class CameraList:
                 self.camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
 
     @property
-    def view_range(self): return self.camera.view_range
+    def view_range(self):
+        with self.lock:
+            return self.camera.view_range
 
     @property
-    def constant(self): return self.camera.constant
+    def constant(self):
+        with self.lock:
+            return self.camera.constant
+
+    @property
+    def data(self):
+        with self.lock:
+            return self.camera.data
+
+    def resize(self, x_factor, y_factor):
+        assert x_factor > 0 and y_factor > 0
+        with self.lock:
+            self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.camera.get(cv2.CAP_PROP_FRAME_WIDTH) * x_factor)
+            self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.camera.get(cv2.CAP_PROP_FRAME_HEIGHT) * y_factor)
+            self.data.constant *= np.sqrt(x_factor * y_factor)
+
+    def set_frame_size(self, width, height):
+        assert width > 0 and height > 0
+        with self.lock:
+            self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+            self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+            self.data.constant = np.sqrt(width * height)

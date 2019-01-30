@@ -20,7 +20,7 @@ class TableConn:
     def set(self, key, value):
         self.table.putValue(key, value)
 
-    def add_on_entry_change(self, func, *keys):
+    def add_entry_change_listener(self, func, *keys):
         """
         add a function to be called every time a specific entry is changed on the vision table
         :param func:
@@ -39,7 +39,7 @@ class TableConn:
         :param is_new:
         """
         for operation in self.key_commands[key]:
-            operation(is_new)
+            operation(value)
 
 
 def net_init(ip=NETWORK_TABLES_IP, table_name=VISION_TABLE_NAME):

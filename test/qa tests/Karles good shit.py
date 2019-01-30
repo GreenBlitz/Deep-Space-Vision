@@ -5,7 +5,7 @@ from utils import *
 DISTANCE_FROM_BALL_HALL_TO_VISION_TARGETS = 5
 
 def main():
-    camera = Camera(PORT, MICROSOFT_CAM)
+    camera = Camera(PORT, LIFECAM_3000)
     camera.set_exposure(-13)
     vision_table = cvnet.net_init()
     camera.set(cv2.CAP_PROP_EXPOSURE, 1)

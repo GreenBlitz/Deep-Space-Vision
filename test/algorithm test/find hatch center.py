@@ -3,7 +3,7 @@ from utils import *
 
 
 def main():
-    camera = Camera(PORT, MICROSOFT_CAM)
+    camera = Camera(PORT, LIFECAM_3000)
     camera.set_exposure(-13)
 
     while True:
