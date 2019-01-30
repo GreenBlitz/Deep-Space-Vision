@@ -7,8 +7,8 @@ class RotatedRectFinder(ObjectFinder):
         ObjectFinder.__init__(self, threshold_func, object_descriptor)
         self.__full_pipeline = (threshold_func +
                                 find_contours +
-                                sort_contours +
                                 filter_contours +
+                                sort_contours +
                                 contours_to_rotated_rects_sorted)
         self.area_scalar = area_scalar
 

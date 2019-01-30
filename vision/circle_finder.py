@@ -6,8 +6,8 @@ class CircleFinder(ObjectFinder):
     def __init__(self, threshold_func, object_descriptor):
         ObjectFinder.__init__(self, threshold_func, object_descriptor)
         self.__full_pipeline = (threshold_func +
-                                sort_contours +
                                 filter_contours +
+                                sort_contours +
                                 contours_to_circles_sorted +
                                 filter_inner_circles)
 

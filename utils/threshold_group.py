@@ -2,11 +2,16 @@ import cv2
 
 
 class ThresholdGroup:
-    def __init__(self, *thresholds):
+    def __init__(self, *thresholds, **kwargs):
+        self.binary_mask = cv2.bitwise_or if 'binary_mask' not in kwargs else kwargs['binary_mask']
+        if kwargs['binary_mask']:
+            del kwargs['binary_mask']
+        for i in kwargs:
+            raise Warning('keyword value %s is never used' % i)
         self.thresholds = list(thresholds)
 
     def __call__(self, frame):
-        return reduce(lambda th_frame, threshold: cv2.bitwise_or(th_frame, threshold(frame)), self.thresholds, 0.0)
+        return reduce(lambda th_frame, threshold: self.binary_mask(th_frame, threshold(frame)), self.thresholds, 0.0)
 
     def __add__(self, other):
         if isinstance(other, ThresholdGroup):

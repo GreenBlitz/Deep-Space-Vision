@@ -15,7 +15,7 @@ def main():
         cv2.imshow('Hello I is vision', thr)
         d = []
         circles = (
-                threshold_cargo + find_contours + sort_contours + filter_contours + contours_to_circles_sorted + filter_inner_circles)(
+                threshold_cargo + find_contours + filter_contours + sort_contours + contours_to_circles_sorted + filter_inner_circles)(
             frame)
 
         circles = circles[:1]

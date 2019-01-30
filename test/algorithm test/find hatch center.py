@@ -8,7 +8,7 @@ def main():
 
     while True:
         ok, frame = camera.read()
-        vts = (threshold_vision_target + find_contours + sort_contours + filter_contours)(frame)
+        vts = (threshold_vision_target + find_contours + filter_contours + sort_contours)(frame)
         vt_r = find_vision_target(frame, camera)
         aad = []
         for i, vt in enumerate(vts):
