@@ -1,10 +1,10 @@
 import cv2
-
+from functools import reduce
 
 class ThresholdGroup:
     def __init__(self, *thresholds, **kwargs):
         self.binary_mask = cv2.bitwise_or if 'binary_mask' not in kwargs else kwargs['binary_mask']
-        if kwargs['binary_mask']:
+        if 'binary_mask' in kwargs:
             del kwargs['binary_mask']
         for i in kwargs:
             raise Warning('keyword value %s is never used' % i)
