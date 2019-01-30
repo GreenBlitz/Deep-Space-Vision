@@ -1,6 +1,6 @@
 from networktables import NetworkTables
 
-from net_consts import *
+from .net_consts import *
 
 
 class TableConn:
