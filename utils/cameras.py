@@ -86,7 +86,7 @@ class CameraList:
         self.cameras = {}
         self.camera = None
         for i, c in enumerate(set(ports)):
-            self.cameras[c] = (Camera(c, cameras_data[i]))
+            self.cameras[c] = Camera(c, cameras_data[i])
         self.lock = Lock()
         self.camera = self.cameras[select_cam] if select_cam in self.cameras else None
 

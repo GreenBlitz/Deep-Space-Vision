@@ -3,7 +3,7 @@ from utils import *
 
 
 def main():
-    camera = Camera(0, LIFECAM_3000)
+    camera = Camera(0, LIFECAM_STUDIO)
     import os
     os.system('v4lt-clt -d /dev/video0 -c exposure_auto=1')
     os.system('v4lt-ctl -d /dev/video0 -c exposure_auto=6')

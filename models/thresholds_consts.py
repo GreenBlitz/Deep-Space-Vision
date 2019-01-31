@@ -19,7 +19,7 @@ TRASH_THRESHOLD = Threshold(
 
 # [[6, 13], [77, 163], [182, 254]],
 CARGO_THRESHOLD = Threshold(
-        [[4, 82] , [108, 158], [166, 254]],
+    [[4, 13], [108, 158], [166, 254]],
     'HLS'
 )
 

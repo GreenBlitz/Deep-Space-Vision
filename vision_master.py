@@ -16,6 +16,7 @@ ALGORITHMS_DICT = {
 
 NUMBER_OF_CAMERAS = 1
 
+
 class VisionMaster:
     def __init__(self, algorithm, camera, conn):
         self.__current = algorithm
@@ -28,7 +29,7 @@ class VisionMaster:
             self.__current(self.__camera, self.__conn)
 
     def __call__(self):
-        apply()
+        self.apply()
 
     def get_current_algorithm(self):
         with self.__lock:
@@ -47,6 +48,7 @@ class VisionMaster:
         with self.__lock:
             self.__camera = value
 
+
 def main():
     print("starting vision master")
     cameras = CameraList(range(NUMBER_OF_CAMERAS), [LIFECAM_STUDIO])
@@ -58,12 +60,12 @@ def main():
     master = VisionMaster(ALGORITHMS_DICT['send_cargo'], cameras.camera, conn)
    
     print("registering connection listeners")
-    conn.add_entry_change_listener(lambda algo: master.set_current_algorithm(ALGORITHMS_DICS[value]), 'algorithm')
-    conn.add_entry_change_listener(lambda cam: master.set_current_camrea(cameras[int(cam)]), 'camera')
+    conn.add_entry_change_listener(lambda algo: master.set_current_algorithm(ALGORITHMS_DICT[algo]), 'algorithm')
+    conn.add_entry_change_listener(lambda cam: master.set_current_camera(cameras[int(cam)]), 'camera')
      
     print("setting camera exposure")
     os.system('v4l2-ctl -d /dev/video0 -c exposure_auto=1')
-    #os.system('v4l2-ctl -d /dev/video0 -c exposure_absolute=6')
+    # os.system('v4l2-ctl -d /dev/video0 -c exposure_absolute=6')
     cameras.set_exposure(-6)
 
     while True:

@@ -16,7 +16,7 @@ def main():
     src = []
     boxes = []
     video = cv2.VideoCapture(PORT)
-    video.set(cv2.CAP_PROP_EXPOSURE, -3)
+    video.set(cv2.CAP_PROP_EXPOSURE, -6)
     while True:
         ok, frame = video.read()
         cv2.imshow('window', frame)
@@ -36,7 +36,7 @@ def main():
     params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2),
                                                c_factor=5, alpha=5, survivors_size=20,
                                                gen_size=1000, gen_random=100, max_iter=10,
-                                               range_regulator=0.5*np.array([0.05, 0.1, 0.1]))
+                                               range_regulator=np.array([0.1, 0.2, 0.2]))
     plt.plot(np.arange(len(scores)), scores)
     print(map(list, params.astype(int)))
     plt.show()
