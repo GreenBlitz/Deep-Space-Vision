@@ -35,7 +35,7 @@ find_contours = PipeLine(lambda frame: cv2.findContours(frame, cv2.RETR_TREE, cv
 
 sort_contours = PipeLine(lambda cnts: sorted(cnts, key=lambda x: cv2.contourArea(x), reverse=True))
 
-filter_contours = PipeLine((lambda cnts: filter(lambda c: cv2.contourArea(c) >= 3.0, cnts)))
+filter_contours = PipeLine((lambda cnts: filter(lambda c: cv2.contourArea(c) >= 6.0, cnts)))
 
 contour_center = PipeLine(lambda cnt: cv2.moments(cnt),
                           lambda m: (int(m['m10'] / (m['m00'] + 0.0000001)), int(m['m01'] / (m['m00'] + 0.0000001))))

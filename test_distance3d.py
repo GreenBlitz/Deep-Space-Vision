@@ -7,7 +7,7 @@ def main():
     import os
     os.system('v4l2-ctl -d /dev/video0 -c exposure_auto=1')
     camera.resize(0.5, 0.5)
-    print(camera.set_exposure(-4))
+    print(camera.set_exposure(-12))
     time = 0
     while True:
         time += 1

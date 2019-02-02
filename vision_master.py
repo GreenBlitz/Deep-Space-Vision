@@ -51,13 +51,13 @@ class VisionMaster:
 
 def main():
     print("starting vision master")
-    cameras = CameraList(range(NUMBER_OF_CAMERAS), [LIFECAM_STUDIO])
+    cameras = CameraList(range(NUMBER_OF_CAMERAS), [LIFECAM_3000])
     cameras.camera.resize(0.5, 0.5)
     
     conn = net_init()
 
     print("creating vision master")
-    master = VisionMaster(ALGORITHMS_DICT['send_cargo'], cameras.camera, conn)
+    master = VisionMaster(ALGORITHMS_DICT['send_hatch'], cameras.camera, conn)
    
     print("registering connection listeners")
     conn.add_entry_change_listener(lambda algo: master.set_current_algorithm(ALGORITHMS_DICT[algo]), 'algorithm')
@@ -66,7 +66,7 @@ def main():
     print("setting camera exposure")
     os.system('v4l2-ctl -d /dev/video0 -c exposure_auto=1')
     # os.system('v4l2-ctl -d /dev/video0 -c exposure_absolute=6')
-    cameras.set_exposure(-6)
+    cameras.set_exposure(-12)
 
     while True:
         try:
