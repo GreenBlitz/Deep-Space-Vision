@@ -10,6 +10,7 @@ def fix_img255(im):
 
 def main():
     camera = Camera(PORT, LIFECAM_STUDIO)
+    print(camera.set(cv2.CAP_PROP_SATURATION, 100))
     while True:
         ok, frame = camera.read()
         cv2.imshow("feed", frame)

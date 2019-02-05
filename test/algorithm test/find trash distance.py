@@ -36,7 +36,7 @@ def main():
         thr = threshold_trash(frame)
         cv2.imshow('hello i is vision', thr)
         d = 0
-        cnts = sorted_contours(thr)
+        cnts = (find_contours + sort_contours)(thr)
         rects = contours_to_rects_sorted(cnts)
 
         if len(rects) > 0:
@@ -55,7 +55,7 @@ def main():
         k = cv2.waitKey(1) & 0xFF
 
         if k == ord('d'):
-            print d
+            print(d)
 
         if k == ord('c'):
             cv2.destroyAllWindows()
