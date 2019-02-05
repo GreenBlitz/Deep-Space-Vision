@@ -1,7 +1,5 @@
 import cv2
 from functools import reduce
-import sys
-
 
 class ThresholdGroup:
     def __init__(self, *thresholds, **kwargs):

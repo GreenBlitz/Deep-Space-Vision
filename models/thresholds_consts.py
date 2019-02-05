@@ -19,7 +19,7 @@ TRASH_THRESHOLD = Threshold(
 
 # [[6, 13], [77, 163], [182, 254]],
 CARGO_THRESHOLD = Threshold(
-    [[1, 30], [55, 168], [174, 255]],
+    [[4, 13], [108, 158], [166, 254]],
     'HLS'
 )
 
@@ -31,7 +31,8 @@ HATCH_PANEL_THRESHOLD = ThresholdGroup(Threshold(
     'HLS'
 ), Threshold([[18, 57], [108, 139], [163, 246]], 'HLS'))
 
+#    [[30, 79], [113, 234], [0, 55]],
 VISION_TARGET_THRESHOLD = Threshold(
-    [[30, 79], [113, 234], [0, 55]],
+    [[0, 20], [50, 255], [0, 20]],
     'BGR'
 )

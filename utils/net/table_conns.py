@@ -2,6 +2,10 @@ from networktables import NetworkTables
 
 from .net_consts import *
 
+def create_listener(conn):
+    def inner(path, key, value, is_new):
+        return conn.entry_change_callback(key, value, is_new)
+    return inner
 
 class TableConn:
     def __init__(self):
@@ -9,10 +13,8 @@ class TableConn:
         self.key_commands = {}
 
     def set_table(self, table):
-        if self.table is not None:
-            self.table.removeEntryListener(self.__entry_change_callback)
         self.table = table
-        self.table.addEntryListener(self.__entry_change_callback)
+        self.table.addEntryListener(create_listener(self))
 
     def get(self, key, default=None):
         return self.table.getValue(key, default)
@@ -31,13 +33,15 @@ class TableConn:
                 self.key_commands[key] = []
             self.key_commands[key].append(func)
 
-    def __entry_change_callback(self, key, value, is_new):
+    def entry_change_callback(self, key, value, is_new):
         """
         runs when an entry is changed on the vision table
         :param key:
         :param value:
         :param is_new:
         """
+        if key not in self.key_commands:
+            return
         for operation in self.key_commands[key]:
             operation(value)
 
