@@ -20,9 +20,10 @@ def send_cargo(camera, conn):
     cargos = list(find_cargo(frame, camera))
     last_found += 1
     if last_found > 5:
-        conn.set('cargo::distance', 1)
+        conn.set('cargo::distance', 0)
         conn.set('cargo::angle', 0)
     if len(cargos) > 0:
+        print('found_cargo')
         last_found = 0
         closest_cargo = cargos[0]
         dist = np.linalg.norm(closest_cargo)
