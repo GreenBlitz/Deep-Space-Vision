@@ -15,10 +15,13 @@ def main():
     conn = net_init()
 
     conn.add_entry_change_listener(lambda cam: cameras.set_camera(int(cam)), 'camera')
+    conn.add_entry_change_listener('camera')
      
     print("setting camera exposure")
     cameras.toggle_auto_exposure(0.25)
-    cameras.set_exposure()
+    cameras.set_exposure(-12)
+
+    conn.set('algorithm', 'send_cargo')
 
     while True:
         algo = conn.get('algorithm')
