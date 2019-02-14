@@ -21,8 +21,8 @@ threshold_cargo = PipeLine(CARGO_THRESHOLD,
                            lambda frame: cv2.dilate(frame, np.ones((5, 5)), iterations=6))
 
 threshold_hatch_panel = PipeLine(HATCH_PANEL_THRESHOLD,
-                                 lambda frame: cv2.erode(frame, np.ones((3, 3)), iterations=1),
-                                 lambda frame: cv2.dilate(frame, np.ones((3, 3)), iterations=1))
+                                 lambda frame: cv2.erode(frame, np.ones((2, 2)), iterations=1),
+                                 lambda frame: cv2.dilate(frame, np.ones((2, 2)), iterations=1))
 
 threshold_vision_target = PipeLine(VISION_TARGET_THRESHOLD)
 
@@ -40,7 +40,7 @@ filter_contours = PipeLine((lambda cnts: filter(lambda c: cv2.contourArea(c) >= 
 contour_center = PipeLine(lambda cnt: cv2.moments(cnt),
                           lambda m: (int(m['m10'] / (m['m00'] + 0.0000001)), int(m['m01'] / (m['m00'] + 0.0000001))))
 
-contours_centers = PipeLine(lambda cnts: map(lambda c: contour_center(c), cnts))
+contours_centers = PipeLine(lambda cnts: map(contour_center, cnts))
 
 # SHAPES
 

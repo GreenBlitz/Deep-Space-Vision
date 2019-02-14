@@ -2,20 +2,17 @@ from .rotated_rect_finder import RotatedRectFinder
 from models import *
 from funcs import *
 
-
-
 ENCLOSING_RECT_MAX_RATIO = 0.549719211778
 
 
 class HatchFinder(RotatedRectFinder):
     def __init__(self, threshold_func, object_descriptor, vt_distance=0.2866, area_scalar=1.0):
-        super(HatchFinder, self).__init__(threshold_func, object_descriptor, area_scalar)
+        RotatedRectFinder.__init__(self, threshold_func, object_descriptor, area_scalar)
         self.__vector_distance = np.array([vt_distance/2, 0, 0])
         self.vt_distance = vt_distance
 
     def __call__(self, frame, camera):
-        rects = super(HatchFinder, self).__call__(frame, camera)
-        #rects = self.__full_pipeline(frame)
+        rects = self._full_pipeline(frame)
 
         left_targets, right_targets = split_list(
             lambda rotated_rect: rotated_rect[2] < 0 or rotated_rect[2] > np.pi, rects)
@@ -25,13 +22,13 @@ class HatchFinder(RotatedRectFinder):
             left_targets_real.append(self.im_object.location3d_by_params(camera, np.sqrt(i[0] * i[1]), [i[0], i[2]]))
         for i in right_targets:
             right_targets_real.append(self.im_object.location3d_by_params(camera, np.sqrt(i[0] * i[1]), [i[0], i[2]]))
-        print("yes")
+
         target_pairs = []
         i = 0
         while i < len(left_targets_real):
             lt = left_targets_real[i]
             possibles = sorted(filter(lambda t: abs(np.linalg.norm(lt - t[1]) - self.vt_distance) < 0.1,
-                                      (zip(range(len(right_targets_real)), right_targets_real))),
+                                      enumerate(right_targets_real)),
                                key=lambda t: abs(np.linalg.norm(lt - t[1]) - self.vt_distance))
             for p in possibles:
                 if right_targets[p[0]][0][0] > left_targets[i][0][0]:

@@ -3,12 +3,12 @@ from utils import *
 
 
 def main():
-    camera = Camera(0, LIFECAM_STUDIO)
+    camera = Camera(1, LIFECAM_STUDIO)
     import os
     os.system('v4lt-clt -d /dev/video0 -c exposure_auto=1')
     os.system('v4lt-ctl -d /dev/video0 -c exposure_auto=6')
-    print(camera.set(cv2.CAP_PROP_FRAME_WIDTH, camera.get(cv2.CAP_PROP_FRAME_WIDTH)//4))
-    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, camera.get(cv2.CAP_PROP_FRAME_HEIGHT)//4)
+    #print(camera.set(cv2.CAP_PROP_FRAME_WIDTH, camera.get(cv2.CAP_PROP_FRAME_WIDTH)//4))
+    #camera.set(cv2.CAP_PROP_FRAME_HEIGHT, camera.get(cv2.CAP_PROP_FRAME_HEIGHT)//4)
     camera.data.constant /= 4
 
     time = 0
