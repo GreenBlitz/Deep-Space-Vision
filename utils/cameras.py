@@ -47,7 +47,7 @@ class Camera:
     def set_exposure(self, exposure):
         self.capture.set(cv2.CAP_PROP_EXPOSURE, exposure)
 
-    def toggle_auto_exposure(self, auto=1):
+    def toggle_auto_exposure(self, auto=0):
         self.capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
 
     def resize(self, x_factor, y_factor):
@@ -152,12 +152,9 @@ class CameraList:
         with self.lock:
             self.camera.set(cv2.CAP_PROP_EXPOSURE, exposure)
 
-    def toggle_auto_exposure(self, auto=None):
+    def toggle_auto_exposure(self, auto=0):
         with self.lock:
-            if auto is None:
-                self.camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, ~self.camera.get(cv2.CAP_PROP_APERTURE))
-            else:
-                self.camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
+            self.camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
 
     @property
     def view_range(self):
