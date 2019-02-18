@@ -45,10 +45,10 @@ class Camera:
         return self.capture.release()
 
     def set_exposure(self, exposure):
-        self.capture.set(cv2.CAP_PROP_EXPOSURE, exposure)
+        return self.capture.set(cv2.CAP_PROP_EXPOSURE, exposure)
 
     def toggle_auto_exposure(self, auto=0):
-        self.capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
+        return self.capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
 
     def resize(self, x_factor, y_factor):
         assert x_factor > 0 and y_factor > 0
@@ -150,11 +150,11 @@ class CameraList:
 
     def set_exposure(self, exposure):
         with self.lock:
-            self.camera.set(cv2.CAP_PROP_EXPOSURE, exposure)
+            return self.camera.set(cv2.CAP_PROP_EXPOSURE, exposure)
 
     def toggle_auto_exposure(self, auto=0):
         with self.lock:
-            self.camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
+            return self.camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
 
     @property
     def view_range(self):

@@ -61,6 +61,6 @@ contours_to_polygons = PipeLine(lambda cnts: map(lambda cnt: (cnt, 0.05 * cv2.ar
                                 lambda cnts: map(lambda cnt0_eps1: cv2.approxPolyDP(cnt0_eps1[0], cnt0_eps1[1], True),
                                                  cnts),
                                 lambda polydps: map(lambda polydp: map(lambda x: x[0], polydp), polydps),
-                                lambda polydps: map(lambda polydp: map(tuple, polydp), polydps))
+                                lambda polydps: map(lambda polydp: list(map(tuple, polydp)), polydps))
 
 filter_inner_circles = PipeLine(funcs.filter_inner_circles)
