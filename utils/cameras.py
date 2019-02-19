@@ -13,7 +13,7 @@ class CameraData:
         return self.constant == other.constant and self.view_range == other.view_range
 
 
-class Camera:
+class Camera(cv2.VideoCapture):
     """
     camera api used to measure distances and estimate locations by other functions
     """
@@ -28,38 +28,24 @@ class Camera:
         from a distance of 1m, used to find the [x z] location of objects
         :param port: the port of the camera
         """
+        cv2.VideoCapture.__init__(self, port)
         self.data = deepcopy(data)
         self.port = port
-        self.capture = cv2.VideoCapture(port)
-
-    def read(self):
-        return self.capture.read()
-
-    def get(self, item):
-        return self.capture.get(item)
-
-    def set(self, prop_id, value):
-        return self.capture.set(prop_id, value)
-
-    def release(self):
-        return self.capture.release()
 
     def set_exposure(self, exposure):
-        return self.capture.set(cv2.CAP_PROP_EXPOSURE, exposure)
+        return self.set(cv2.CAP_PROP_EXPOSURE, exposure)
 
     def toggle_auto_exposure(self, auto=0):
-        return self.capture.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
+        return self.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
 
     def resize(self, x_factor, y_factor):
-        assert x_factor > 0 and y_factor > 0
-        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.capture.get(cv2.CAP_PROP_FRAME_WIDTH) * x_factor)
-        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT) * y_factor)
+        self.set(cv2.CAP_PROP_FRAME_WIDTH, self.get(cv2.CAP_PROP_FRAME_WIDTH) * x_factor)
+        self.set(cv2.CAP_PROP_FRAME_HEIGHT, self.get(cv2.CAP_PROP_FRAME_HEIGHT) * y_factor)
         self.data.constant *= np.sqrt(x_factor * y_factor)
 
     def set_frame_size(self, width, height):
-        assert width > 0 and height > 0
-        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        self.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        self.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
         self.data.constant = np.sqrt(width * height)
 
     @property

@@ -35,9 +35,9 @@ def main():
 
         left_targets_real, right_targets_real = [], []
         for i in left_targets:
-            left_targets_real.append(VISION_TARGET.location3d_by_params(camera, np.sqrt(i[0] * i[1]), [i[0], i[2]]))
+            left_targets_real.append(VISION_TARGET.location3d_by_params(camera, np.sqrt(i[1][0] * i[1][1]), i[0]))
         for i in right_targets:
-            right_targets_real.append(VISION_TARGET.location3d_by_params(camera, np.sqrt(i[0] * i[1]), [i[0], i[2]]))
+            right_targets_real.append(VISION_TARGET.location3d_by_params(camera, np.sqrt(i[1][0] * i[1][1]), i[0]))
 
         target_pairs = []
         i = 0
