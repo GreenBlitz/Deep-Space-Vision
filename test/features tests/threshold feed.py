@@ -6,7 +6,7 @@ current_threshold = threshold_vision_target
 
 def main():
     camera = Camera(PORT, LIFECAM_3000)
-    camera.set_exposure(-1)
+    camera.set_exposure(-13)
     while True:
         ok, frame = camera.read()
         cv2.imshow("feed", frame)

@@ -53,7 +53,9 @@ class HatchFinder(RotatedRectFinder):
             i += 1
         all_hatches = []
         for i in target_pairs:
-            all_hatches.append((i[0] + i[1]) / 2)
+            all_hatches.append(
+                np.concatenate(((i[0] + i[1]) / 2,
+                                np.array([np.arccos(max(-1, min(1, (i[0][2] - i[1][2]) / self.vt_distance)))]))))
 
         for i, t in enumerate(left_targets_real):
             if len(left_targets_polys[i][1]) != 4:
@@ -76,8 +78,8 @@ class HatchFinder(RotatedRectFinder):
             leftest = sorted_polys[0]
             rightest = sorted_polys[3]
 
-            sng = -np.sign(np.linalg.norm(leftest - lowest) - np.linalg.norm(rightest - highest))
-            angle = sng*np.arccos(min(min(w_s / h_s, h_s / w_s) / ENCLOSING_RECT_MAX_RATIO, 1))
+            sng = np.sign(np.linalg.norm(rightest - highest) - np.linalg.norm(leftest - lowest))
+            angle = sng * np.arccos(min(min(w_s / h_s, h_s / w_s) / ENCLOSING_RECT_MAX_RATIO, 1))
 
             rot_matrix = np.array([[np.cos(angle), 0, np.sin(angle)],
                                    [0, 1, 0],
@@ -104,8 +106,8 @@ class HatchFinder(RotatedRectFinder):
             leftest = sorted_polys[0]
             rightest = sorted_polys[3]
 
-            sng = -np.sign(np.linalg.norm(leftest - highest) - np.linalg.norm(rightest - lowest))
-            angle = sng*np.arccos(min(min(w_s / h_s, h_s / w_s) / ENCLOSING_RECT_MAX_RATIO, 1))
+            sng = np.sign(np.linalg.norm(rightest - lowest) - np.linalg.norm(leftest - highest))
+            angle = sng * np.arccos(min(min(w_s / h_s, h_s / w_s) / ENCLOSING_RECT_MAX_RATIO, 1))
 
             rot_matrix = np.array([[np.cos(angle), 0, np.sin(angle)],
                                    [0, 1, 0],

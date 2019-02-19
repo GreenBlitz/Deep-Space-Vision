@@ -6,7 +6,7 @@ from exceptions import CouldNotReadFrameException
 def send_hatch(camera, conn):
     ok, frame = camera.read()
     if not ok:
-        raise CouldNotReadFrameException("Kinda obvious... Could not read frame")
+        raise CouldNotReadFrameException()
     hatches = list(find_hatch(frame, camera))
     if len(hatches) > 0:
         closest_hatch = hatches[0]
