@@ -44,7 +44,7 @@ def main():
         cv2.imshow('threshold', threshold(frame, params.astype(int)))
         cv2.imshow('feed', frame)
         if cv2.waitKey(1) & 0xFF == ord('c'):
-            cv2.destroyAllWindows()
+            cv2.destroyAllWindows( )
             break
 
 
