@@ -8,7 +8,7 @@ ENCLOSING_RECT_MAX_RATIO = 0.549719211778
 
 def main():
     camera = Camera(PORT, LIFECAM_3000)
-    camera.resize(0.25, 0.25)
+    camera.resize(0.5, 0.5)
     camera.toggle_auto_exposure(0.25)
     print('[DEBUG] changed camera exposure' if camera.set_exposure(0) else '[WARN] unable to set camera exposure')
     target_to_rotated_rects = (threshold_vision_target +
@@ -34,9 +34,9 @@ def main():
             lambda rotated_rect: rotated_rect[0][2] < -45, rects_polys)
 
         for i in left_targets:
-           cv2.drawContours(frame, [np.int0(cv2.boxPoints(i[0]))], 0, (255, 0, 0), 5)
+           cv2.drawContours(frame, [np.int0(cv2.boxPoints(i[0]))], 0, (255, 0, 0), 2)
         for i in right_targets:
-           cv2.drawContours(frame, [np.int0(cv2.boxPoints(i[0]))], 0, (0, 0, 255), 5)
+           cv2.drawContours(frame, [np.int0(cv2.boxPoints(i[0]))], 0, (0, 0, 255), 2)
 
         left_targets_real, right_targets_real = [], []
 

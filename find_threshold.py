@@ -37,7 +37,7 @@ def main():
             break
     params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2),
                                                c_factor=5, alpha=5, survivors_size=20,
-                                               gen_size=1000, gen_random=900, max_iter=5,
+                                               gen_size=3000, gen_random=900, max_iter=3,
                                                range_regulator=0.01*np.array([0.02, 0.1, 0.1]))
     plt.plot(np.arange(len(scores)), scores)
     print(list(map(list, params.astype(int))))
