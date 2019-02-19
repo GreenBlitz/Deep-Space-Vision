@@ -1,6 +1,4 @@
-import cv2
 import matplotlib.pyplot as plt
-import numpy as np
 from models import *
 from utils import *
 
@@ -8,7 +6,7 @@ from tools.genetic_threshold import find_optimized_parameters
 
 
 def threshold(frame, params):
-    #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HLS)
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HLS)
     red, green, blue = params
     return cv2.inRange(frame, (red[0], green[0], blue[0]), (red[1], green[1], blue[1]))
 
@@ -17,7 +15,7 @@ def main():
     src = []
     boxes = []
     video = Camera(PORT, None)
-    video.set_exposure(-13)
+    video.set_exposure(-6)
     while True:
         ok, frame = video.read()
         cv2.imshow('window', frame)
@@ -35,9 +33,9 @@ def main():
             cv2.destroyAllWindows()
             break
     params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2),
-                                               c_factor=5, alpha=5, survivors_size=100,
-                                               gen_size=10000, gen_random=900, max_iter=5,
-                                               range_regulator=0.01*np.array([0.1, 0.2, 0.2]))
+                                               c_factor=5, alpha=5, survivors_size=20,
+                                               gen_size=1000, gen_random=100, max_iter=10,
+                                               range_regulator=np.array([0.02, 0.1, 0.1]))
     plt.plot(np.arange(len(scores)), scores)
     print(list(map(list, params.astype(int))))
     plt.show()

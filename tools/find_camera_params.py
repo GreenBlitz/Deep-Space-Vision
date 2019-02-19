@@ -10,8 +10,8 @@ def main():
         if cv2.waitKey(1) & 0xFF == ord('r'):
             box = cv2.selectROI('feed', frame)
             print(box)
-            width, height = float(raw_input('enter width in meters: ')), float(raw_input('enter height in meters: '))
-            distance = float(raw_input('enter distance in meters: '))
+            width, height = float(input('enter width in meters: ')), float(input('enter height in meters: '))
+            distance = float(input('enter distance in meters: '))
             print(np.sqrt((box[2]*box[3])/(width*height))*distance)
             cv2.destroyAllWindows()
             break

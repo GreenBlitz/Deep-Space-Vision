@@ -17,7 +17,7 @@ class HatchFinder(RotatedRectFinder):
 
     def __call__(self, frame, camera):
         cnts = self._full_pipeline(frame)
-        rects = contours_to_rotated_rects_sorted(cnts)
+        rects = contours_to_rotated_rects(cnts)
         polys = contours_to_polygons(cnts)
         rects_polys = zip(rects, polys)
         left_targets_polys, right_targets_polys = split_list(

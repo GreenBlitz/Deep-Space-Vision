@@ -32,7 +32,7 @@ def create_child(sur, alpha, factor):
 
 
 def find_optimized_parameters(func, images, bboxes, p_shape, gen_size=1000,
-                              survivors_size=20, p_factor=255, alpha=50, max_iter=100,
+                              survivors_size=20, p_factor=255, alpha=50, max_iter=10,
                               gen_random=5, c_factor=1, range_regulator=0.5):
     gen = []
     all_scores = []
