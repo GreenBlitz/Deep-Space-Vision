@@ -64,3 +64,5 @@ contours_to_polygons = PipeLine(lambda cnts: map(lambda cnt: (cnt, 0.05 * cv2.ar
                                 lambda polydps: map(lambda polydp: list(map(tuple, polydp)), polydps))
 
 filter_inner_circles = PipeLine(funcs.filter_inner_circles)
+
+filter_inner_rects = PipeLine(funcs.filter_inner_rects)

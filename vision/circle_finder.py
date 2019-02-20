@@ -9,7 +9,7 @@ class CircleFinder(ObjectFinder):
                                find_contours +
                                filter_contours +
                                sort_contours +
-                               contours_to_circles_sorted +
+                               contours_to_circles +
                                filter_inner_circles)
 
     def __call__(self, frame, camera):

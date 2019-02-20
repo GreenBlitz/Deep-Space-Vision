@@ -1,13 +1,13 @@
-from .rotated_rect_finder import RotatedRectFinder
+from .object_finder import ObjectFinder
 from models import *
 from funcs import *
 
 ENCLOSING_RECT_MAX_RATIO = 0.549719211778
 
 
-class HatchFinder(RotatedRectFinder):
-    def __init__(self, threshold_func, object_descriptor, vt_distance=0.2866, area_scalar=1.0):
-        RotatedRectFinder.__init__(self, threshold_func, object_descriptor, area_scalar)
+class HatchFinder(ObjectFinder):
+    def __init__(self, threshold_func, object_descriptor, vt_distance=0.2866):
+        ObjectFinder.__init__(self, threshold_func, object_descriptor)
         self._full_pipeline = (threshold_func +
                                find_contours +
                                filter_contours +
@@ -56,7 +56,9 @@ class HatchFinder(RotatedRectFinder):
         for i in target_pairs:
             all_hatches.append(
                 np.concatenate(((i[0] + i[1]) / 2,
-                                np.array([np.arccos(max(-1, min(1, (i[0][2] - i[1][2]) / self.vt_distance)))]))))
+                                np.array(
+                                    [np.pi / 2 - np.arccos(
+                                        max(-1, min(1, (i[0][2] - i[1][2]) / (self.vt_distance * 2))))]))))
 
         for i, t in enumerate(left_targets_real):
             if len(left_targets_polys[i][1]) != 4:

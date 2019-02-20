@@ -80,13 +80,22 @@ class CameraList:
         with self.lock:
             return self.camera.set(prop_id, value)
 
-    def set_exposure(self, exposure):
-        with self.lock:
-            return self.camera.set(cv2.CAP_PROP_EXPOSURE, exposure)
+    def set_exposure(self, exposure, foreach=False):
+        if foreach:
+            with self.lock:
+                for i in self.cameras:
+                    self.cameras[i].set_exposure(exposure)
+        else:
+            with self.lock:
+                return self.camera.set_exposure(exposure)
 
-    def toggle_auto_exposure(self, auto=0):
-        with self.lock:
-            return self.camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
+    def toggle_auto_exposure(self, auto=0, foreach=False):
+        if foreach:
+            for i in self.cameras:
+                self.cameras[i].toggle_auto_exposure(auto)
+        else:
+            with self.lock:
+                return self.camera.toggle_auto_exposure(auto)
 
     @property
     def view_range(self):
@@ -103,23 +112,31 @@ class CameraList:
         with self.lock:
             return self.camera.data
 
-    def resize(self, x_factor, y_factor):
-        assert x_factor > 0 and y_factor > 0
-        with self.lock:
-            self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.camera.get(cv2.CAP_PROP_FRAME_WIDTH) * x_factor)
-            self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.camera.get(cv2.CAP_PROP_FRAME_HEIGHT) * y_factor)
-            self.data.constant *= np.sqrt(x_factor * y_factor)
+    def resize(self, x_factor, y_factor, foreach=False):
+        if foreach:
+            with self.lock:
+                for i in self.cameras:
+                    self.cameras[i].resize(x_factor, y_factor)
+        else:
+            with self.lock:
+                self.camera.resize(x_factor, y_factor)
 
-    def set_frame_size(self, width, height):
-        assert width > 0 and height > 0
-        with self.lock:
-            self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-            self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-            self.data.constant = np.sqrt(width * height)
+    def set_frame_size(self, width, height, foreach=False):
+        if foreach:
+            with self.lock:
+                for i in self.cameras:
+                    self.cameras[i].set_frame_size(width, height)
+        else:
+            with self.lock:
+                self.camera.set_frame_size(width, height)
 
-    def toggle_stream(self, should_stream=False):
-        with self.lock:
-            self.camera.toggle_stream(should_stream)
+    def toggle_stream(self, should_stream=False, foreach=False):
+        if foreach:
+            for i in self.cameras:
+                self.cameras[i].toggle_stream(should_stream)
+        else:
+            with self.lock:
+                self.camera.toggle_stream(should_stream)
 
     @property
     def width(self):
