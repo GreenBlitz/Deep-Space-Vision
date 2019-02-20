@@ -1,84 +1,5 @@
+from .camera import *
 from threading import Lock
-from copy import deepcopy
-import cv2
-import numpy as np
-
-
-class CameraData:
-    def __init__(self, surface_constant, fov):
-        self.constant = surface_constant
-        self.view_range = fov
-
-    def __cmp__(self, other):
-        return self.constant == other.constant and self.view_range == other.view_range
-
-
-class Camera(cv2.VideoCapture):
-    """
-    camera api used to measure distances and estimate locations by other functions
-    """
-
-    def __init__(self, port, data):
-        """
-        :param data: containing some required camera information, such as const and angle
-        const: the camera constant, computed as the square root of the area in pixels of a 1x1 m board
-        viewed from a distance of 1 meters, used to calculate distances by the formula: d = F*sqrt(S/P) where F is
-        the camera constant, S is the area of the object in m^2 and P is the area in pixels
-        angle: the viewing range of the camera, computed as the arctan of half of the maximum height of an object seen
-        from a distance of 1m, used to find the [x z] location of objects
-        :param port: the port of the camera
-        """
-        cv2.VideoCapture.__init__(self, port)
-        self.data = deepcopy(data)
-        self.port = port
-
-    def set_exposure(self, exposure):
-        return self.set(cv2.CAP_PROP_EXPOSURE, exposure)
-
-    def toggle_auto_exposure(self, auto=0):
-        return self.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
-
-    def resize(self, x_factor, y_factor):
-        self.set(cv2.CAP_PROP_FRAME_WIDTH, self.get(cv2.CAP_PROP_FRAME_WIDTH) * x_factor)
-        self.set(cv2.CAP_PROP_FRAME_HEIGHT, self.get(cv2.CAP_PROP_FRAME_HEIGHT) * y_factor)
-        self.data.constant *= np.sqrt(x_factor * y_factor)
-
-    def set_frame_size(self, width, height):
-        self.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-        self.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-        self.data.constant = np.sqrt(width * height)
-
-    @property
-    def view_range(self): return self.data.view_range
-
-    @property
-    def constant(self): return self.data.constant
-
-
-class StreamCamera(Camera):
-    """
-    a camera with an option to stream the image it reads
-    """
-    def __init__(self, port, data, stream_client, should_stream=False):
-        """
-
-        :param port: the camera port (see Camera constructor)
-        :param data: the camera descriptor (see Camera constructor)
-        :param stream_client: a StreamClient object used to stream the image
-        :param should_stream:
-        """
-        Camera.__init__(self, port, data)
-        self.stream_client = stream_client
-        self.should_stream = should_stream
-
-    def read(self, image=None):
-        ok, frame = Camera.read(self, image)
-        if self.should_stream and ok:
-            self.stream_client.send_frame(frame)
-        return ok, frame
-
-    def toggle_stream(self, should_stream=False):
-        self.should_stream = should_stream
 
 
 class CameraList:
@@ -199,3 +120,11 @@ class CameraList:
     def toggle_stream(self, should_stream=False):
         with self.lock:
             self.camera.toggle_stream(should_stream)
+
+    @property
+    def width(self):
+        return self.get(cv2.CAP_PROP_FRAME_WIDTH)
+
+    @property
+    def height(self):
+        return self.get(cv2.CAP_PROP_FRAME_HEIGHT)

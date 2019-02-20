@@ -59,7 +59,7 @@ class ImageObject:
         :param cnt: the contours of this object in the frame
         :return: a 2d vector of the relative [x z] location between the object and the camera (in meters)
         """
-        frame_center = camera.get(cv2.CAP_PROP_FRAME_WIDTH), camera.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        frame_center = camera.width, camera.height
         frame_center = np.array(frame_center) / 2
         m = cv2.moments(cnt)
         vp = m['m10'] / (m['m00'] + 0.000001), m['m01'] / (m['m00'] + 0.000001)
@@ -84,7 +84,7 @@ class ImageObject:
         :param center: the center (x,y) of this object in the frame
         :return: a 2d vector of the relative [x z] location between the object and the camera (in meters)
         """
-        frame_center = camera.get(cv2.CAP_PROP_FRAME_WIDTH), camera.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        frame_center = camera.width, camera.height
         frame_center = np.array(frame_center) / 2
         x, y = np.array(center) - frame_center
         alpha = x * camera.view_range / frame_center[0]
@@ -115,7 +115,7 @@ class ImageObject:
         :param cnt: the contours of this object in the frame
         :return: a 2d vector of the relative [x z] location between the object and the camera (in meters)
         """
-        frame_center = camera.get(cv2.CAP_PROP_FRAME_WIDTH), camera.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        frame_center = camera.width, camera.height
         frame_center = np.array(frame_center) / 2
         m = cv2.moments(cnt)
         vp = m['m10'] / (m['m00'] + 0.000001), m['m01'] / (m['m00'] + 0.000001)
@@ -133,7 +133,7 @@ class ImageObject:
         :param center: the center (x,y) of this object in the frame
         :return: a 2d vector of the relative [x z] location between the object and the camera (in meters)
         """
-        frame_center = camera.get(cv2.CAP_PROP_FRAME_WIDTH), camera.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        frame_center = camera.width, camera.height
         frame_center = np.array(frame_center) / 2
         x, y = np.array(center) - frame_center
         alpha = x * camera.data.view_range / frame_center[0]
