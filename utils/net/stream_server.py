@@ -7,18 +7,15 @@ import cv2
 
 class StreamServer:
     def __init__(self, ip='0.0.0.0', port=STREAM_PORT):
-        _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        _socket.bind((ip, port))
-        _socket.listen(10)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket.bind((ip, port))
 
-        conn, addr = _socket.accept()
-        self.socket = conn
         self.payload_size = struct.calcsize("I")
         self.data = b''
 
     def get_frame(self):
         while len(self.data) < self.payload_size:
-            self.data += self.socket.recv(4096)
+            self.data += self.socket.recv(2**20)
         packed_msg_size = self.data[:self.payload_size]
         self.data = self.data[self.payload_size:]
         msg_size = struct.unpack("I", packed_msg_size)[0]
