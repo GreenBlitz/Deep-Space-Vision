@@ -24,6 +24,8 @@ def main():
     print("setting camera auto exposure to false")
     cameras.toggle_auto_exposure(0.25, foreach=True)
 
+    cameras.toggle_stream(True, foreach=True)
+
     conn.set('algorithm', 'send_cargo')
     prev_algo = conn.get('algorithm')
     while True:
