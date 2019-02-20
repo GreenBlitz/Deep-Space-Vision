@@ -31,4 +31,4 @@ class StreamServer:
         self.data = self.data[msg_size:]
 
         frame = cv2.imdecode(pickle.loads(frame_data), -1)
-        return cv2.resize(frame, (0,0), fx=10, fy=10)
+        return cv2.resize(frame, (0,0), fx=3, fy=3)
