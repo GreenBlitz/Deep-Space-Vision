@@ -17,14 +17,14 @@ class StreamCamera(Camera):
         Camera.__init__(self, port, data)
         self.stream_client = stream_client
         self.should_stream = should_stream
-        self.im_width = Camera.get(self, cv2.CAP_PROP_FRAME_WIDTH)
-        self.im_height = Camera.get(self, cv2.CAP_PROP_FRAME_WIDTH)
+        self.im_width = cv2.VideoCapture.get(self, cv2.CAP_PROP_FRAME_WIDTH)
+        self.im_height = cv2.VideoCapture.get(self, cv2.CAP_PROP_FRAME_HEIGHT)
 
     def read(self, image=None):
         ok, frame = Camera.read(self, image)
         if self.should_stream and ok:
             self.stream_client.send_frame(frame)
-        return ok, cv2.resize(frame, (self.im_width, self.im_height))
+        return ok, cv2.resize(frame, (int(self.im_width), int(self.im_height)))
 
     def toggle_stream(self, should_stream=False):
         self.should_stream = should_stream
@@ -37,9 +37,11 @@ class StreamCamera(Camera):
         return Camera.get(self, propId)
 
     def resize(self, x_factor, y_factor):
-        self.im_width = int(self.im_width * x_factor)
-        self.im_height = int(self.im_height * y_factor)
+        self.im_width = self.im_width * x_factor
+        self.im_height = self.im_height * y_factor
+        self.data.constant *= np.sqrt(x_factor*y_factor)
 
     def set_frame_size(self, width, height):
-        self.im_width = int(width)
-        self.im_height = int(height)
+        self.im_width = width
+        self.im_height = height
+        self.data.constant = np.sqrt(width * height)

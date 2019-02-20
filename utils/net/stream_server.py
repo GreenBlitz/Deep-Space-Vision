@@ -7,9 +7,10 @@ import cv2
 
 class StreamServer:
     def __init__(self, ip='0.0.0.0', port=STREAM_PORT):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((ip, port))
-
+        self.socket.listen(10)
+        self.socket, addr = self.socket.accept()
         self.payload_size = struct.calcsize("I")
         self.data = b''
 

@@ -8,7 +8,7 @@ def main():
     server = StreamServer()
     while True:
         frame = server.get_frame()
-        cv2.imshow('stream', cv2.resize(frame, (0,0), fx=1.2/0.4, fy=1.2/0.4))
+        cv2.imshow('stream', frame)
         if cv2.waitKey(1) & 0xFF == ord('c'):
             cv2.destroyAllWindows()
             break
