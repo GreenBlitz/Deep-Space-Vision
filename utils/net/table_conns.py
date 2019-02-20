@@ -2,10 +2,13 @@ from networktables import NetworkTables
 
 from .net_consts import *
 
+
 def create_listener(conn):
     def inner(path, key, value, is_new):
         return conn.entry_change_callback(key, value, is_new)
+
     return inner
+
 
 class TableConn:
     def __init__(self):

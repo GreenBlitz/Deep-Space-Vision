@@ -6,14 +6,16 @@ import struct
 
 
 class StreamClient:
-    def __init__(self, ip=STREAM_IP, port=STREAM_PORT, im_encode='.jpg', grayscale=True):
+    def __init__(self, ip=STREAM_IP, port=STREAM_PORT, im_encode='.jpg', grayscale=True, fx=0.5, fy=0.5):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_addr = (ip, port)
         self.socket.connect(self.server_addr)
         self.im_encode = im_encode
         self.grayscale = grayscale
+        self.resize = (fx, fy)
 
     def send_frame(self, frame):
+        frame = cv2.resize(frame, self.resize)
         if self.grayscale:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
