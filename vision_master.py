@@ -19,6 +19,7 @@ def main():
     conn = net_init()
 
     conn.add_entry_change_listener(lambda cam: cameras.set_camera(int(cam)), 'camera')
+    conn.add_entry_change_listener(lambda should_stream: cameras.toggle_stream(should_stream, foreach=True), 'stream')
 
     print("setting camera auto exposure to false")
     cameras.toggle_auto_exposure(0.25, foreach=True)
