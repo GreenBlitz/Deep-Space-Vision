@@ -1,4 +1,4 @@
-from .camera import *
+from .stream_camera import *
 from threading import Lock
 
 
@@ -89,7 +89,7 @@ class CameraList:
             with self.lock:
                 return self.camera.set_exposure(exposure)
 
-    def toggle_auto_exposure(self, auto=0, foreach=False):
+    def toggle_auto_exposure(self, auto, foreach=False):
         if foreach:
             for i in self.cameras:
                 self.cameras[i].toggle_auto_exposure(auto)
@@ -112,6 +112,11 @@ class CameraList:
         with self.lock:
             return self.camera.data
 
+    @property
+    def port(self):
+        with self.lock:
+            return self.camera.port
+
     def resize(self, x_factor, y_factor, foreach=False):
         if foreach:
             with self.lock:
@@ -133,7 +138,8 @@ class CameraList:
     def toggle_stream(self, should_stream=False, foreach=False):
         if foreach:
             for i in self.cameras:
-                self.cameras[i].toggle_stream(should_stream)
+                if isinstance(self.cameras[i], StreamCamera):
+                    self.cameras[i].toggle_stream(should_stream)
         else:
             with self.lock:
                 self.camera.toggle_stream(should_stream)

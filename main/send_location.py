@@ -2,10 +2,11 @@ from exceptions import *
 from models import *
 
 
-def init_send_location(camera, conn):
+def init_send_location(camera, conn, stream_camera):
     conn.set('led_f', True)
     conn.set('led_b', True)
     camera.set_exposure(0, foreach=True)
+    stream_camera.toggle_auto_exposure(0.75)
 
 
 def send_location(camera, conn):
