@@ -17,12 +17,18 @@ class StreamServer:
     def get_frame(self):
         while len(self.data) < self.payload_size:
             self.data += self.socket.recv(2**20)
+
         packed_msg_size = self.data[:self.payload_size]
+
         self.data = self.data[self.payload_size:]
+
         msg_size = struct.unpack("I", packed_msg_size)[0]
+
         while len(self.data) < msg_size:
             self.data += self.socket.recv(4096)
+
         frame_data = self.data[:msg_size]
         self.data = self.data[msg_size:]
+
         frame = cv2.imdecode(pickle.loads(frame_data), -1)
-        return frame
+        return cv2.resize(frame, (0,0), fx=10, fy=10)

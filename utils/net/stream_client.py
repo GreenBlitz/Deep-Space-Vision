@@ -6,7 +6,7 @@ import struct
 
 
 class StreamClient:
-    def __init__(self, ip=STREAM_IP, port=STREAM_PORT, im_encode='.jpg', grayscale=True, fx=0.5, fy=0.5):
+    def __init__(self, ip=STREAM_IP, port=STREAM_PORT, im_encode='.jpg', grayscale=True, fx=0.1, fy=0.1):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_addr = (ip, port)
         self.socket.connect(self.server_addr)
