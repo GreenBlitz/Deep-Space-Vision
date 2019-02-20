@@ -12,10 +12,11 @@ class StreamClient:
         self.socket.connect(self.server_addr)
         self.im_encode = im_encode
         self.grayscale = grayscale
-        self.resize = (fx, fy)
+        self.fx = fx
+        self.fy = fy
 
     def send_frame(self, frame):
-        frame = cv2.resize(frame, self.resize)
+        frame = cv2.resize(frame, (0, 0), fx=self.fx, fy=self.fy)
         if self.grayscale:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
