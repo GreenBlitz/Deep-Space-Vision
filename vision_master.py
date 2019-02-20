@@ -3,12 +3,12 @@ from utils.net import *
 from utils import *
 from main import *
 
-CAMERA_DATA_LIST = [LIFECAM_3000]
-
 
 def main():
     print("starting vision master")
-    cameras = CameraList(range(len(CAMERA_DATA_LIST)), CAMERA_DATA_LIST)
+    cameras = CameraList([
+
+    ])
 
     cameras.resize(0.5, 0.5)
     
@@ -19,7 +19,7 @@ def main():
      
     print("setting camera exposure")
     cameras.toggle_auto_exposure(0.25)
-    cameras.set_exposure(-12)
+    cameras.set_exposure(1)
 
     conn.set('algorithm', 'send_cargo')
 

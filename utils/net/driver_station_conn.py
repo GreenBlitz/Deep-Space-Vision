@@ -1,5 +1,5 @@
 import socket
-from net_consts import *
+from .net_consts import *
 
 
 class DriverStationConn:

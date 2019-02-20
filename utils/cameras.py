@@ -55,6 +55,32 @@ class Camera(cv2.VideoCapture):
     def constant(self): return self.data.constant
 
 
+class StreamCamera(Camera):
+    """
+    a camera with an option to stream the image it reads
+    """
+    def __init__(self, port, data, stream_client, should_stream=False):
+        """
+
+        :param port: the camera port (see Camera constructor)
+        :param data: the camera descriptor (see Camera constructor)
+        :param stream_client: a StreamClient object used to stream the image
+        :param should_stream:
+        """
+        Camera.__init__(self, port, data)
+        self.stream_client = stream_client
+        self.should_stream = should_stream
+
+    def read(self, image=None):
+        ok, frame = Camera.read(self, image)
+        if self.should_stream and ok:
+            self.stream_client.send_frame(frame)
+        return ok, frame
+
+    def toggle_stream(self, should_stream=False):
+        self.should_stream = should_stream
+
+
 class CameraList:
     """
     behaves as both a camera and a list of cameras
@@ -63,16 +89,15 @@ class CameraList:
     as a single camera
     """
 
-    def __init__(self, ports, cameras_data, select_cam=0):
+    def __init__(self, cameras, select_cam=0):
         """
-        :param ports: the ports of the cameras
-        :param cameras_data: the camera data object describing each port
+        :param cameras: list of the cameras which will be part of the camera list
+        you can also add and remove cameras later using the
         :param select_cam: optional, an initial camera to be selected
         """
         self.cameras = {}
-        self.camera = None
-        for i, c in enumerate(set(ports)):
-            self.cameras[c] = Camera(c, cameras_data[i])
+        for i in cameras:
+            self.cameras[i.port] = i
         self.lock = Lock()
         self.camera = self.cameras[select_cam] if select_cam in self.cameras else None
 
@@ -170,3 +195,7 @@ class CameraList:
             self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, width)
             self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
             self.data.constant = np.sqrt(width * height)
+
+    def toggle_stream(self, should_stream=False):
+        with self.lock:
+            self.camera.toggle_stream(should_stream)
