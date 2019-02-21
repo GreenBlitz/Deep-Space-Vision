@@ -1,9 +1,8 @@
-import cv2
 import matplotlib.pyplot as plt
-import numpy as np
-from models import PORT
+from models import *
+from utils import *
 
-from genetic_threshold import find_optimized_parameters
+from tools.genetic_threshold import find_optimized_parameters
 
 
 def threshold(frame, params):
@@ -15,8 +14,8 @@ def threshold(frame, params):
 def main():
     src = []
     boxes = []
-    video = cv2.VideoCapture(PORT)
-    video.set(cv2.CAP_PROP_EXPOSURE, -6)
+    video = Camera(PORT, None)
+    video.set_exposure(-6)
     while True:
         ok, frame = video.read()
         cv2.imshow('window', frame)
@@ -36,9 +35,9 @@ def main():
     params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2),
                                                c_factor=5, alpha=5, survivors_size=20,
                                                gen_size=1000, gen_random=100, max_iter=10,
-                                               range_regulator=np.array([0.1, 0.2, 0.2]))
+                                               range_regulator=np.array([0.02, 0.1, 0.1]))
     plt.plot(np.arange(len(scores)), scores)
-    print(map(list, params.astype(int)))
+    print(list(map(list, params.astype(int))))
     plt.show()
     while True:
         cv2.imshow('original', src[0])

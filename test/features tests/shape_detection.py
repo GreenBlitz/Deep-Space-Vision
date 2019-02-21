@@ -5,6 +5,7 @@ from models import *
 
 def main():
     camera = Camera(PORT, LIFECAM_STUDIO)
+    camera.set_exposure(-6)
     while True:
         ok, frame = camera.read()
         circles = cv2.HoughCircles(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), cv2.HOUGH_GRADIENT, 1.2, 200)

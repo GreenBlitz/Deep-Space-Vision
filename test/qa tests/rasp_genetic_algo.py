@@ -4,7 +4,7 @@ import numpy as np
 from models import PORT
 import sys_config
 
-from genetic_threshold import find_optimized_parameters
+from tools.genetic_threshold import find_optimized_parameters
 
 
 def threshold(frame, params):

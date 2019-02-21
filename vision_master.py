@@ -1,80 +1,52 @@
 from models import *
 from utils.net import *
 from utils import *
-from exceptions import *
-import sys
-import threading
 from main import *
-import os
 
-ALGORITHMS_DICT = {
-    'send_cargo': send_cargo,
-    'send_hatch': send_hatch,
-    'send_fuel': send_fuel,
-    'send_trash': send_trash
-}
-
-NUMBER_OF_CAMERAS = 1
-
-
-class VisionMaster:
-    def __init__(self, algorithm, camera, conn):
-        self.__current = algorithm
-        self.__lock = threading.RLock()
-        self.__camera = camera
-        self.__conn = conn
-
-    def apply(self):
-        with self.__lock:
-            self.__current(self.__camera, self.__conn)
-
-    def __call__(self):
-        self.apply()
-
-    def get_current_algorithm(self):
-        with self.__lock:
-            return self.__current
-
-    def set_current_algorithm(self, value):
-        with self.__lock:    
-            print('changing algorithm to: %s' % value)
-            self.__current = value
-
-    def get_current_camera(self):
-        with self.__lock:
-            return self.__camera
-
-    def set_current_camera(self, value):
-        with self.__lock:
-            self.__camera = value
+FRONT_CAM_STREAM_PORT = 8089
+BACK_CAM_STREAM_PORT = 8090
 
 
 def main():
     print("starting vision master")
-    cameras = CameraList(range(NUMBER_OF_CAMERAS), [LIFECAM_3000])
-    cameras.camera.resize(0.5, 0.5)
-    
+    cameras = CameraList([
+        StreamCamera(0, LIFECAM_3000, StreamClient(port=FRONT_CAM_STREAM_PORT), should_stream=True),
+        StreamCamera(1, LIFECAM_3000, StreamClient(port=BACK_CAM_STREAM_PORT), should_stream=True)
+    ])
+
+    cameras.resize(0.5, 0.5)
+
     conn = net_init()
 
-    print("creating vision master")
-    master = VisionMaster(ALGORITHMS_DICT['send_hatch'], cameras.camera, conn)
-   
-    print("registering connection listeners")
-    conn.add_entry_change_listener(lambda algo: master.set_current_algorithm(ALGORITHMS_DICT[algo]), 'algorithm')
-    conn.add_entry_change_listener(lambda cam: master.set_current_camera(cameras[int(cam)]), 'camera')
-     
-    print("setting camera exposure")
-    os.system('v4l2-ctl -d /dev/video0 -c exposure_auto=1')
-    # os.system('v4l2-ctl -d /dev/video0 -c exposure_absolute=6')
-    cameras.set_exposure(-12)
+    conn.add_entry_change_listener(lambda cam: cameras.set_camera(int(cam)), 'camera')
+    conn.add_entry_change_listener(lambda should_stream: cameras.toggle_stream(should_stream, foreach=True), 'stream')
 
+    print("setting camera auto exposure to false")
+    cameras.toggle_auto_exposure(0.25, foreach=True)
+
+    conn.set('algorithm', 'send_cargo')
+    prev_algo = conn.get('algorithm')
     while True:
-        try:
-            master.apply()
-        except VisionWarning as vw:
-            print(vw, file=sys.stderr)
-        except VisionException as ve:
-            print(ve, file=sys.stderr)
+        algo = conn.get('algorithm')
+        if algo == 'send_cargo':
+            if algo != prev_algo:
+                init_send_cargo(cameras, conn)
+            send_cargo(cameras, conn)
+
+        if algo == 'send_hatch':
+            if algo != prev_algo:
+                init_send_hatch(cameras, conn)
+            send_hatch(cameras, conn)
+
+        if algo == 'send_location':
+            if algo != prev_algo:
+                init_send_location(cameras, conn)
+            send_location(cameras, conn)
+
+        if algo == 'send_hatch_panel':
+            if algo != prev_algo:
+                init_send_hatch_panel(cameras, conn)
+            send_hatch_panel(cameras, conn)
 
 
 if __name__ == '__main__':

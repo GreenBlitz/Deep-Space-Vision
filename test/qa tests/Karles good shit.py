@@ -29,3 +29,4 @@ if __name__ == '__main__':
 
 
 def find_center(frame):  # rename it please
+    pass

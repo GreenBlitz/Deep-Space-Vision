@@ -1,7 +1,6 @@
 import utils.net as cvnet
 from models import *
 from utils import *
-from vision import find_trash
 import time
 
 
@@ -28,7 +27,7 @@ def main():
 
         vision_table.set('Trash::Distance', distance)
 
-        print time.time()
+        print(time.time())
 
         if cv2.waitKey(1) & 0xff == 27:
             cv2.destroyAllWindows()

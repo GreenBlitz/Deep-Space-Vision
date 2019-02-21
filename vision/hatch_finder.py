@@ -1,69 +1,120 @@
-from .rotated_rect_finder import RotatedRectFinder
+from .object_finder import ObjectFinder
 from models import *
 from funcs import *
 
 ENCLOSING_RECT_MAX_RATIO = 0.549719211778
 
 
-class HatchFinder(RotatedRectFinder):
-    def __init__(self, threshold_func, object_descriptor, vt_distance=0.2866, area_scalar=1.0):
-        RotatedRectFinder.__init__(self, threshold_func, object_descriptor, area_scalar)
-        self.__vector_distance = np.array([vt_distance/2, 0, 0])
+class HatchFinder(ObjectFinder):
+    def __init__(self, threshold_func, object_descriptor, vt_distance=0.2866):
+        ObjectFinder.__init__(self, threshold_func, object_descriptor)
+        self._full_pipeline = (threshold_func +
+                               find_contours +
+                               filter_contours +
+                               sort_contours)
+        self.__vector_distance = np.array([vt_distance / 2, 0, 0])
         self.vt_distance = vt_distance
 
     def __call__(self, frame, camera):
-        rects = self._full_pipeline(frame)
+        cnts = self._full_pipeline(frame)
+        rects = contours_to_rotated_rects(cnts)
+        polys = contours_to_polygons(cnts)
+        rects_polys = zip(rects, polys)
+        left_targets_polys, right_targets_polys = split_list(
+            lambda rotated_rect: rotated_rect[0][2] < -45.0, rects_polys)
 
-        left_targets, right_targets = split_list(
-            lambda rotated_rect: rotated_rect[2] < 0 or rotated_rect[2] > np.pi, rects)
+        left_targets = list(map(lambda pair: pair[0], left_targets_polys))
+        right_targets = list(map(lambda pair: pair[0], right_targets_polys))
 
         left_targets_real, right_targets_real = [], []
+        left_targets_real, right_targets_real = [], []
         for i in left_targets:
-            left_targets_real.append(self.im_object.location3d_by_params(camera, np.sqrt(i[0] * i[1]), [i[0], i[2]]))
+            left_targets_real.append(self.im_object.location3d_by_params(camera, np.sqrt(i[1][0] * i[1][1]), i[0]))
         for i in right_targets:
-            right_targets_real.append(self.im_object.location3d_by_params(camera, np.sqrt(i[0] * i[1]), [i[0], i[2]]))
+            right_targets_real.append(self.im_object.location3d_by_params(camera, np.sqrt(i[1][0] * i[1][1]), i[0]))
 
         target_pairs = []
         i = 0
         while i < len(left_targets_real):
             lt = left_targets_real[i]
-            possibles = sorted(filter(lambda t: abs(np.linalg.norm(lt - t[1]) - self.vt_distance) < 0.1,
+            possibles = sorted(filter(lambda t: abs(np.linalg.norm(lt - t[1]) - self.vt_distance) < 0.2,
                                       enumerate(right_targets_real)),
                                key=lambda t: abs(np.linalg.norm(lt - t[1]) - self.vt_distance))
             for p in possibles:
-                if right_targets[p[0]][0][0] > left_targets[i][0][0]:
+                if right_targets[p[0]][0][0] < left_targets[i][0][0]:
                     target_pairs.append((lt, p[1]))
                     del left_targets[i]
                     del left_targets_real[i]
+                    del left_targets_polys[i]
                     del right_targets[p[0]]
                     del right_targets_real[p[0]]
+                    del right_targets_polys[p[0]]
                     i -= 1
                     break
             i += 1
         all_hatches = []
         for i in target_pairs:
-            all_hatches.append((i[0] + i[1]) / 2)
+            all_hatches.append(
+                np.concatenate(((i[0] + i[1]) / 2,
+                                np.array(
+                                    [np.pi / 2 - np.arccos(
+                                        max(-1, min(1, (i[0][2] - i[1][2]) / (self.vt_distance * 2))))]))))
 
-        print(left_targets_real)
         for i, t in enumerate(left_targets_real):
+            if len(left_targets_polys[i][1]) != 4:
+                print('[WARN] polydp returning %d points instead of four' % len(left_targets[i][1]))
+                continue
+
             width, height = left_targets[i][1]
-            w_s = np.cos(left_targets[i][2]) * width + np.sin(left_targets[i][2]) * height
-            h_s = np.sin(left_targets[i][2]) * width + np.cos(left_targets[i][2]) * height
-            angle = np.arccos(min(w_s / h_s, h_s / w_s) / ENCLOSING_RECT_MAX_RATIO)
+            tmp_ang = np.deg2rad(90.0 + left_targets[i][2])
+
+            w_s = np.cos(tmp_ang) * width + np.sin(tmp_ang) * height
+            h_s = np.sin(tmp_ang) * width + np.cos(tmp_ang) * height
+
+            poly = np.array(left_targets_polys[i][1])
+
+            sorted_polys = sorted(poly, key=lambda p: p[1])
+            highest = sorted_polys[0]
+            lowest = sorted_polys[3]
+
+            sorted_polys = sorted(poly, key=lambda p: p[0])
+            leftest = sorted_polys[0]
+            rightest = sorted_polys[3]
+
+            sng = np.sign(np.linalg.norm(rightest - highest) - np.linalg.norm(leftest - lowest))
+            angle = sng * np.arccos(min(min(w_s / h_s, h_s / w_s) / ENCLOSING_RECT_MAX_RATIO, 1))
+
             rot_matrix = np.array([[np.cos(angle), 0, np.sin(angle)],
                                    [0, 1, 0],
-                                   [-np.cos(angle), 0, np.cos(angle)]])
-            all_hatches.append(t + rot_matrix.dot(self.__vector_distance))
+                                   [-np.sin(angle), 0, np.cos(angle)]])
+            all_hatches.append(t - rot_matrix.dot(self.__vector_distance))
 
         for i, t in enumerate(right_targets_real):
+            if len(right_targets_polys[i][1]) != 4:
+                print('[WARN] polydp returning %d points instead of four' % len(right_targets[i][1]))
+                continue
             width, height = right_targets[i][1]
-            w_s = np.cos(right_targets[i][2]) * width + np.sin(right_targets[i][2]) * height
-            h_s = np.sin(right_targets[i][2]) * width + np.cos(right_targets[i][2]) * height
-            angle = np.arccos(min(w_s / h_s, h_s / w_s) / ENCLOSING_RECT_MAX_RATIO)
+            tmp_ang = np.deg2rad(abs(right_targets[i][2]))
+
+            w_s = np.cos(tmp_ang) * width + np.sin(tmp_ang) * height
+            h_s = np.sin(tmp_ang) * width + np.cos(tmp_ang) * height
+
+            poly = np.array(right_targets_polys[i][1])
+
+            sorted_polys = sorted(poly, key=lambda p: p[1])
+            highest = sorted_polys[0]
+            lowest = sorted_polys[3]
+
+            sorted_polys = sorted(poly, key=lambda p: p[0])
+            leftest = sorted_polys[0]
+            rightest = sorted_polys[3]
+
+            sng = np.sign(np.linalg.norm(rightest - lowest) - np.linalg.norm(leftest - highest))
+            angle = sng * np.arccos(min(min(w_s / h_s, h_s / w_s) / ENCLOSING_RECT_MAX_RATIO, 1))
+
             rot_matrix = np.array([[np.cos(angle), 0, np.sin(angle)],
                                    [0, 1, 0],
-                                   [-np.cos(angle), 0, np.cos(angle)]])
-            all_hatches.append(t - rot_matrix.dot(self.__vector_distance))
+                                   [-np.sin(angle), 0, np.cos(angle)]])
+            all_hatches.append(t + rot_matrix.dot(self.__vector_distance))
         all_hatches.sort(key=lambda v: np.linalg.norm(v))
         return all_hatches
-

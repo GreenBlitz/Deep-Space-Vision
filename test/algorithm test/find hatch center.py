@@ -3,12 +3,10 @@ from utils import *
 from utils.net import *
 
 
-
 def main():
     camera = Camera(PORT, LIFECAM_3000)
     camera.set_exposure(-13)
     conn = net_init()
-
 
     while True:
         ok, frame = camera.read()
@@ -27,15 +25,14 @@ def main():
             if i == 1:
                 a = np.array(vt_r[0])
                 b = np.array(vt_r[1])
-                center = (a + b)/2
+                center = (a + b) / 2
                 dis = np.linalg.norm(center)
-                ang = np.rad2deg(np.arctan(center[0]/ center[2]))
+                ang = np.rad2deg(np.arctan(center[0] / center[2]))
                 conn.set('hatch::distance', dis)
                 conn.set('hatch::ang', ang)
                 print("angle: %s" % ang)
-               # print("distance: %s" % dis)
+                # print("distance: %s" % dis)
                 break
-
 
         cv2.imshow('feed', frame)
 

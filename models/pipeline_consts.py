@@ -17,8 +17,8 @@ threshold_trash = PipeLine(TRASH_THRESHOLD,
                            lambda frame: cv2.erode(frame, np.ones((2, 2)), iterations=10))
 
 threshold_cargo = PipeLine(CARGO_THRESHOLD,
-                           lambda frame: cv2.erode(frame, np.ones((6, 6)), iterations=5),
-                           lambda frame: cv2.dilate(frame, np.ones((5, 5)), iterations=6))
+                           lambda frame: cv2.erode(frame, np.ones((3, 3)), iterations=1),
+                           lambda frame: cv2.dilate(frame, np.ones((3, 3)), iterations=1))
 
 threshold_hatch_panel = PipeLine(HATCH_PANEL_THRESHOLD,
                                  lambda frame: cv2.erode(frame, np.ones((2, 2)), iterations=1),
@@ -61,6 +61,8 @@ contours_to_polygons = PipeLine(lambda cnts: map(lambda cnt: (cnt, 0.05 * cv2.ar
                                 lambda cnts: map(lambda cnt0_eps1: cv2.approxPolyDP(cnt0_eps1[0], cnt0_eps1[1], True),
                                                  cnts),
                                 lambda polydps: map(lambda polydp: map(lambda x: x[0], polydp), polydps),
-                                lambda polydps: map(lambda polydp: map(tuple, polydp), polydps))
+                                lambda polydps: map(lambda polydp: list(map(tuple, polydp)), polydps))
 
 filter_inner_circles = PipeLine(funcs.filter_inner_circles)
+
+filter_inner_rects = PipeLine(funcs.filter_inner_rects)
