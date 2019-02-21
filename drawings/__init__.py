@@ -1,1 +1,1 @@
-from flow import draw_flow
+from .flow import draw_flow

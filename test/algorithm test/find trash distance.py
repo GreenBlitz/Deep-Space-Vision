@@ -1,12 +1,13 @@
+from collections import deque
+
 from models import *
 from utils import *
 from vision import *
-from collections import deque
 
 
 def is_rect_colliding(r1, r2):
     return not ((r1[0] + r1[2] < r2[0]) or (r2[0] + r2[2] < r1[0]) or (r1[1] + r1[3] < r2[1]) or (
-                r2[1] + r2[3] < r1[1]))
+            r2[1] + r2[3] < r1[1]))
 
 
 def find_ball_vel():
@@ -28,14 +29,14 @@ def find_ball_vel():
 
 
 def main():
-    camera = Camera(0, LIFECAM_STUDIO)
+    camera = Camera(PORT, LIFECAM_STUDIO)
     rtag = np.array([0, 0, 0, 0])
     while True:
         ok, frame = camera.read()
         thr = threshold_trash(frame)
         cv2.imshow('hello i is vision', thr)
         d = 0
-        cnts = sorted_contours(thr)
+        cnts = (find_contours + sort_contours)(thr)
         rects = contours_to_rects_sorted(cnts)
 
         if len(rects) > 0:
@@ -54,7 +55,7 @@ def main():
         k = cv2.waitKey(1) & 0xFF
 
         if k == ord('d'):
-            print d
+            print(d)
 
         if k == ord('c'):
             cv2.destroyAllWindows()

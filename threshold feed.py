@@ -1,21 +1,19 @@
-from funcs import *
-from models import LIFECAM_STUDIO, PORT
+from models import *
 from utils import *
 
-
-def fix_img255(im):
-    # return 255*(im/np.amax(im))
-    return gray(im)
+current_threshold = threshold_cargo
 
 
 def main():
     camera = Camera(PORT, LIFECAM_STUDIO)
-    print(camera.set(cv2.CAP_PROP_SATURATION, 100))
+    camera.resize(0.25, 0.25)
+    import os
+    os.system('v4l2-ctl -d /dev/video0 -c exposure_auto=1')
+    camera.set_exposure(-5)
     while True:
         ok, frame = camera.read()
         cv2.imshow("feed", frame)
-        cv2.imshow("edges", fix_img255(edges(frame)))
-        cv2.imshow("corners", fix_img255(corners(frame)))
+        cv2.imshow("threshold", current_threshold(frame))
         k = cv2.waitKey(1) & 0xFF
         if k == ord('c') or k == ord('C'):
             cv2.destroyAllWindows()

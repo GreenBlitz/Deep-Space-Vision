@@ -1,8 +1,11 @@
-from utils.pipeline import PipeLine
-from thresholds_consts import *
-import numpy as np
-import funcs
 import cv2
+import numpy as np
+
+import funcs
+from .thresholds_consts import *
+from utils.pipeline import PipeLine
+
+# THRESHOLDS
 
 threshold_fuel = PipeLine(FUEL_THRESHOLD,
                           lambda frame: cv2.erode(frame, np.ones((3, 3))),
@@ -13,24 +16,33 @@ threshold_trash = PipeLine(TRASH_THRESHOLD,
                            lambda frame: cv2.dilate(frame, np.ones((3, 3)), iterations=25),
                            lambda frame: cv2.erode(frame, np.ones((2, 2)), iterations=10))
 
-sorted_contours = PipeLine(lambda frame: cv2.findContours(frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[1],
-                           lambda cnts: sorted(cnts, key=lambda x: cv2.contourArea(x), reverse=True))
+threshold_cargo = PipeLine(CARGO_THRESHOLD,
+                           lambda frame: cv2.erode(frame, np.ones((6, 6)), iterations=5),
+                           lambda frame: cv2.dilate(frame, np.ones((5, 5)), iterations=6))
 
-fuel_contours = threshold_fuel + sorted_contours
+threshold_hatch_panel = PipeLine(HATCH_PANEL_THRESHOLD,
+                                 lambda frame: cv2.erode(frame, np.ones((2, 2)), iterations=1),
+                                 lambda frame: cv2.dilate(frame, np.ones((2, 2)), iterations=1))
 
-fuel_contours_filtered = fuel_contours + (lambda cnts: filter(lambda c: cv2.contourArea(c) >= 300.0, cnts))
+threshold_vision_target = PipeLine(VISION_TARGET_THRESHOLD)
 
-trash_contours = threshold_trash + sorted_contours
+# lambda frame: cv2.erode(frame, np.ones((2, 2)), iterations=4),
+#                                 lambda frame: cv2.dilate(frame, np.ones((5, 5)), iterations=20),
+#                                lambda frame: cv2.erode(frame, np.ones((5, 5)), iterations=10))
+# CONTOURS
 
-trash_contours_filtered = fuel_contours + (lambda cnts: filter(lambda c: cv2.contourArea(c) >= 300.0, cnts))
+find_contours = PipeLine(lambda frame: cv2.findContours(frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[1])
 
-contour_to_polygon = PipeLine(lambda cnt: (cnt, 0.05 * cv2.arcLength(cnt, True)),
-                              lambda cnt0_eps1: cv2.approxPolyDP(cnt0_eps1[0], cnt0_eps1[1], True),
-                              lambda polydp: map(lambda x: x[0], polydp),
-                              lambda polydp: map(tuple, polydp))
+sort_contours = PipeLine(lambda cnts: sorted(cnts, key=lambda x: cv2.contourArea(x), reverse=True))
+
+filter_contours = PipeLine((lambda cnts: filter(lambda c: cv2.contourArea(c) >= 6.0, cnts)))
 
 contour_center = PipeLine(lambda cnt: cv2.moments(cnt),
                           lambda m: (int(m['m10'] / (m['m00'] + 0.0000001)), int(m['m01'] / (m['m00'] + 0.0000001))))
+
+contours_centers = PipeLine(lambda cnts: map(contour_center, cnts))
+
+# SHAPES
 
 contours_to_rects = PipeLine(lambda cnts: map(lambda x: cv2.boundingRect(x), cnts))
 
@@ -40,6 +52,15 @@ contours_to_circles = PipeLine(lambda cnts: map(lambda x: cv2.minEnclosingCircle
 
 contours_to_circles_sorted = contours_to_circles + (lambda rects: sorted(rects, key=lambda x: x[1], reverse=True))
 
-filter_inner_circles = PipeLine(funcs.filter_inner_circles)
+contours_to_rotated_rects = PipeLine(lambda cnts: map(lambda x: cv2.minAreaRect(x), cnts))
 
-find_fuel_circles = fuel_contours_filtered + contours_to_circles_sorted + filter_inner_circles
+contours_to_rotated_rects_sorted = contours_to_rotated_rects + PipeLine(
+    lambda rects: sorted(rects, key=lambda x: x[1][0] * x[1][1]))
+
+contours_to_polygons = PipeLine(lambda cnts: map(lambda cnt: (cnt, 0.05 * cv2.arcLength(cnt, True)), cnts),
+                                lambda cnts: map(lambda cnt0_eps1: cv2.approxPolyDP(cnt0_eps1[0], cnt0_eps1[1], True),
+                                                 cnts),
+                                lambda polydps: map(lambda polydp: map(lambda x: x[0], polydp), polydps),
+                                lambda polydps: map(lambda polydp: map(tuple, polydp), polydps))
+
+filter_inner_circles = PipeLine(funcs.filter_inner_circles)

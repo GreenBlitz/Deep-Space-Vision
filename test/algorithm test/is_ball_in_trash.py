@@ -1,13 +1,13 @@
+import winsound
+
 from models import *
 from utils import *
 from vision import *
-from drawings import *
-import winsound
 
 
 def main():
     # print "init"
-    camera = Camera(0, LIFECAM_STUDIO)
+    camera = Camera(PORT, LIFECAM_STUDIO)
     time = 0
     tracking_circles = []
     while True:

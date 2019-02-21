@@ -1,5 +1,5 @@
-import numpy as np
 import cv2
+import numpy as np
 
 
 def corners(im):
@@ -35,4 +35,4 @@ def gray(im):
 
 
 def crop(im, x, y, w, h):
-    return im[y:y+h, x:x+w, :]
+    return im[y:y + h, x:x + w, :]
