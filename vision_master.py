@@ -11,7 +11,7 @@ BACK_CAM_PORT = 2
 def main():
     print("starting vision master")
     print("initializing connection to stream server")
-    stream_port = 1
+    stream_ports = [1]
     stream_client_main = StreamClient()
     cameras = CameraList([
         StreamCamera(FRONT_LEFT_CAM_PORT, LIFECAM_3000, stream_client_main),
@@ -28,8 +28,8 @@ def main():
             cameras.set_camera(BACK_CAM_PORT)
             return
         cameras.set_camera(cam)
-        stream_port = FRONT_LEFT_CAM_PORT if cam == FRONT_RIGHT_CAM_PORT else FRONT_RIGHT_CAM_PORT
-        cameras[stream_port].toggle_auto_exposure(0.75)
+        stream_ports[0] = FRONT_LEFT_CAM_PORT if cam == FRONT_RIGHT_CAM_PORT else FRONT_RIGHT_CAM_PORT
+        cameras[stream_ports[0]].toggle_auto_exposure(0.75)
         cameras.toggle_auto_exposure(0.25)
 
     conn.add_entry_change_listener(camera_change_callback, 'camera')
@@ -46,6 +46,7 @@ def main():
     while True:
         print('iterating...')
         algo = conn.get('algorithm')
+        cameras[stream_ports[0]].read()
         if algo == 'send_cargo':
             if algo != prev_algo:
                 init_send_cargo(cameras, conn)
@@ -53,12 +54,12 @@ def main():
 
         if algo == 'send_hatch':
             if algo != prev_algo:
-                init_send_hatch(cameras, conn, cameras[stream_port])
+                init_send_hatch(cameras, conn, cameras[stream_ports[0]])
             send_hatch(cameras, conn)
 
         if algo == 'send_location':
             if algo != prev_algo:
-                init_send_location(cameras, conn, cameras[stream_port])
+                init_send_location(cameras, conn, cameras[stream_ports[0]])
             send_location(cameras, conn)
 
         if algo == 'send_hatch_panel':

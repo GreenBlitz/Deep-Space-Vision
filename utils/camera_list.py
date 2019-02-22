@@ -135,14 +135,15 @@ class CameraList:
             with self.lock:
                 self.camera.set_frame_size(width, height)
 
-    def toggle_stream(self, should_stream=False, foreach=False):
+    def toggle_stream(self, should_stream, foreach=False):
         if foreach:
             for i in self.cameras:
                 if isinstance(self.cameras[i], StreamCamera):
                     self.cameras[i].toggle_stream(should_stream)
         else:
-            with self.lock:
-                self.camera.toggle_stream(should_stream)
+            if isinstance(self.camera, StreamCamera):
+                with self.lock:
+                    self.camera.toggle_stream(should_stream)
 
     @property
     def width(self):
