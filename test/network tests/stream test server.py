@@ -5,7 +5,7 @@ PORT = 8089
 
 
 def main():
-    server1 = StreamServer()
+    server1 = StreamServer(ip='0.0.0.0', port=5801)
     while True:
         frame1 = server1.get_frame()
         cv2.imshow('stream1', frame1)

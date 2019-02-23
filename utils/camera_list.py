@@ -1,5 +1,4 @@
 from .stream_camera import *
-from threading import Lock
 
 
 class CameraList:
@@ -10,130 +9,102 @@ class CameraList:
     as a single camera
     """
 
-    def __init__(self, cameras, select_cam=0):
+    def __init__(self, cameras, select_cam=None):
         """
         :param cameras: list of the cameras which will be part of the camera list
         you can also add and remove cameras later using the
         :param select_cam: optional, an initial camera to be selected
         """
         self.cameras = {}
+        if select_cam is None and len(cameras) > 0:
+            select_cam = cameras[0].port
         for i in cameras:
             self.cameras[i.port] = i
-        self.lock = Lock()
         self.camera = self.cameras[select_cam] if select_cam in self.cameras else None
 
     def __getitem__(self, item):
-        with self.lock:
-            return self.cameras[item]
+        return self.cameras[item]
 
     def set_camera(self, index):
-        with self.lock:
-            self.camera = self.cameras[index]
+        self.camera = self.cameras[index]
 
     def __delitem__(self, key):
-        with self.lock:
-            if self.camera is self.cameras[key]:
-                self.camera = None
-            del self.cameras[key]
+        if self.camera is self.cameras[key]:
+            self.camera = None
+        del self.cameras[key]
 
-    def read(self, *args):
-        if len(args) == 0:
-            with self.lock:
-                return self.camera.read()
-        images = []
-        with self.lock:
-            for port in args:
-                images.append(self.cameras[port].read())
-        return images
-
-    def add_new_camera(self, port, data):
-        with self.lock:
-            self.cameras[port] = Camera(port, data)
+    def read(self, foreach=False):
+        if foreach:
+            return {port: self[port].read()[1] for port in self.cameras}
+        return self.camera.read()
 
     def add_camera(self, cam):
-        with self.lock:
-            self.camera[cam.port] = cam
+        self.camera[cam.port] = cam
 
     def release(self):
-        with self.lock:
-            del self.cameras[self.camera.port]
-            self.camera = None
+        del self.cameras[self.camera.port]
+        self.camera = None
 
     def __del__(self):
-        with self.lock:
-            for cap in self.cameras.values():
-                cap.release()
+        for cap in self.cameras.values():
+            cap.release()
 
     def default(self):
-        with self.lock:
-            self.camera = self.cameras[self.cameras.keys()[0]]
+        self.camera = self.cameras[list(self.cameras.keys())[0]]
 
-    def get(self, arg):
-        with self.lock:
-            return self.camera.get(arg)
+    def get(self, arg, foreach=False):
+        if foreach:
+            return {port: self[port].get(arg) for port in self.cameras}
+        return self.camera.get(arg)
 
-    def read_all(self):
-        with self.lock:
-            return {port: self.cameras[port].read()[1] for port in self.cameras}
-
-    def set(self, prop_id, value):
-        with self.lock:
-            return self.camera.set(prop_id, value)
+    def set(self, prop_id, value, foreach=False):
+        if foreach:
+            return {port: self[port].set(prop_id, value) for port in self.cameras}
+        return self.camera.set(prop_id, value)
 
     def set_exposure(self, exposure, foreach=False):
         if foreach:
-            with self.lock:
-                for i in self.cameras:
-                    self.cameras[i].set_exposure(exposure)
+            for i in self.cameras:
+                self.cameras[i].set_exposure(exposure)
         else:
-            with self.lock:
-                return self.camera.set_exposure(exposure)
+            return self.camera.set_exposure(exposure)
 
     def toggle_auto_exposure(self, auto, foreach=False):
         if foreach:
             for i in self.cameras:
                 self.cameras[i].toggle_auto_exposure(auto)
         else:
-            with self.lock:
-                return self.camera.toggle_auto_exposure(auto)
+            return self.camera.toggle_auto_exposure(auto)
 
     @property
     def view_range(self):
-        with self.lock:
-            return self.camera.view_range
+        return self.camera.view_range
 
     @property
     def constant(self):
-        with self.lock:
-            return self.camera.constant
+        return self.camera.constant
 
     @property
     def data(self):
-        with self.lock:
-            return self.camera.data
+        return self.camera.data
 
     @property
     def port(self):
-        with self.lock:
-            return self.camera.port
+        return self.camera.port
 
     def resize(self, x_factor, y_factor, foreach=False):
         if foreach:
-            with self.lock:
-                for i in self.cameras:
-                    self.cameras[i].resize(x_factor, y_factor)
+            for i in self.cameras:
+                self.cameras[i].resize(x_factor, y_factor)
         else:
-            with self.lock:
-                self.camera.resize(x_factor, y_factor)
+            self.camera.resize(x_factor, y_factor)
 
     def set_frame_size(self, width, height, foreach=False):
         if foreach:
-            with self.lock:
-                for i in self.cameras:
-                    self.cameras[i].set_frame_size(width, height)
+            for i in self.cameras:
+                self.cameras[i].set_frame_size(width, height)
         else:
-            with self.lock:
-                self.camera.set_frame_size(width, height)
+            self.camera.set_frame_size(width, height)
 
     def toggle_stream(self, should_stream, foreach=False):
         if foreach:
@@ -142,8 +113,7 @@ class CameraList:
                     self.cameras[i].toggle_stream(should_stream)
         else:
             if isinstance(self.camera, StreamCamera):
-                with self.lock:
-                    self.camera.toggle_stream(should_stream)
+                self.camera.toggle_stream(should_stream)
 
     @property
     def width(self):

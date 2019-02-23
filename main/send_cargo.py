@@ -17,11 +17,5 @@ def send_cargo(camera, conn):
     cargos = list(find_cargo(frame, camera))
 
     if len(cargos) > 0:
-        print('found_cargo')
-        closest_cargo = cargos[0]
-        conn.set('x', closest_cargo[0])
-        conn.set('y', closest_cargo[1])
-        conn.set('z', closest_cargo[2])
-        conn.set('angle', 0)
-    else:
-        print("No cargo was found!")
+        closest_cargo = CAMERA_ROTATION_MATRIX.dot(cargos[0])
+        conn.set('output', list(closest_cargo) + [0.0])
