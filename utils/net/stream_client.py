@@ -3,15 +3,19 @@ from .net_consts import *
 import cv2
 import pickle
 import struct
+import numpy as np
+
+MAX_UDP_MESSAGE_LENGTH = 40000
 
 
 class StreamClient:
-    def __init__(self, ip=STREAM_IP, port=STREAM_PORT, im_encode='.jpg', grayscale=True, fx=0.5, fy=0.5):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def __init__(self, ip=STREAM_IP, port=STREAM_PORT, im_encode='.jpg', grayscale=False, fx=0.5, fy=0.5):
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_addr = (ip, port)
-        self.socket.connect(self.server_addr)
+        # self.socket.connect(self.server_addr)
         self.im_encode = im_encode
         self.grayscale = grayscale
+        self.payload_size = struct.calcsize("I")
         self.fx = fx
         self.fy = fy
 
@@ -22,4 +26,5 @@ class StreamClient:
 
         frame = cv2.imencode(self.im_encode, frame)[1]
         data = pickle.dumps(frame)
-        self.socket.send(struct.pack("I", len(data)) + data)
+        data = struct.pack("I", len(data)) + data
+        self.socket.sendto(data, self.server_addr)

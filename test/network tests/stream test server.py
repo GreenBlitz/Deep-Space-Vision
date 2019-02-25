@@ -5,10 +5,11 @@ PORT = 8089
 
 
 def main():
-    server1 = StreamServer(ip='0.0.0.0', port=5801)
+    server1 = StreamServer(ip='0.0.0.0', fx=1, fy=1)
     while True:
         frame1 = server1.get_frame()
-        cv2.imshow('stream1', frame1)
+        if frame1 is not None:
+            cv2.imshow('stream1', frame1)
         if cv2.waitKey(1) & 0xFF == ord('c'):
             cv2.destroyAllWindows()
             break
