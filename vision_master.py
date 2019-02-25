@@ -28,7 +28,7 @@ def main():
 
     print("setting camera auto exposure to false")
 
-    conn.set('algorithm', 'send_location')
+    conn.set('algorithm', 'send_stream')
     prev_algo = None
     while True:
         print('iterating...')
@@ -52,9 +52,13 @@ def main():
 
         if algo == 'send_hatch_panel':
             if algo != prev_algo:
-                pass
                 init_send_hatch_panel(cameras, conn)
             send_hatch_panel(cameras, conn)
+
+        if algo == 'send_stream':
+            if algo != prev_algo:
+                init_send_stream(cameras, conn)
+            send_stream(cameras, conn)
 
         prev_algo = algo
 
