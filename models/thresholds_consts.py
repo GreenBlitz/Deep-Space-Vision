@@ -37,6 +37,6 @@ HATCH_PANEL_THRESHOLD = ThresholdGroup(Threshold(
 # [[12, 164], [41, 168], [0, 10]],
 # [[0, 122], [22, 194], [0, 25]], 
 VISION_TARGET_THRESHOLD = Threshold(
-    [[0, 99], [87, 255], [0, 90]],
-    'BGR'
+    [[67, 127], [41, 101], [144, 204]],
+    'LUV'
 )

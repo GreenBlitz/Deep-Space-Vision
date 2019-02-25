@@ -20,7 +20,7 @@ def main():
         StreamCamera(FRONT_RIGHT_CAM_PORT, LIFECAM_3000, stream_client_main, should_stream=True)
     ])
 
-    conn = net_init(ip='10.45.90.2')
+    conn = TableConn(ip='10.45.90.2')
 
     conn.add_entry_change_listener(lambda cam: cam_change_callback(int(cam), cameras), 'camera')
     conn.add_entry_change_listener(lambda should_stream: cameras[0].toggle_stream(should_stream), 'stream_cam_front')

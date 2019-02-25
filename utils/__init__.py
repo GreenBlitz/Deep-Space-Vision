@@ -6,3 +6,5 @@ from .image_objects import *
 from .pipeline import *
 from .threshold import *
 from .threshold_group import *
+from .broadcast_camera import *
+from .remote_camera import *

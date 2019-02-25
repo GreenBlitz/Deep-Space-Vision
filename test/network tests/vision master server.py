@@ -4,7 +4,7 @@ from utils.net import *
 
 
 def main():
-    conn = net_init()
+    conn = TableConn()
     server = StreamServer()
     while True:
         frame = server.get_frame()

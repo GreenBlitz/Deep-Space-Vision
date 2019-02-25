@@ -9,7 +9,7 @@ MAX_UDP_MESSAGE_LENGTH = 40000
 
 
 class StreamServer:
-    def __init__(self, ip='0.0.0.0', port=STREAM_PORT, fx=0.5, fy=0.5):
+    def __init__(self, ip='0.0.0.0', port=STREAM_PORT, fx=1, fy=1):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((ip, port))
         # self.socket.listen(10)
@@ -31,6 +31,8 @@ class StreamServer:
 
         frame_data = self.data[:msg_size]
         self.data = self.data[msg_size:]
-
-        frame = cv2.imdecode(pickle.loads(frame_data), -1)
+        frame = pickle.loads(frame_data)
+        if frame is None:
+            return None
+        frame = cv2.imdecode(frame, -1)
         return cv2.resize(frame, (0, 0), fx=self.fx, fy=self.fy)
