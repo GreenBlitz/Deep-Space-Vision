@@ -25,7 +25,7 @@ class Camera(cv2.VideoCapture):
     def set_exposure(self, exposure):
         return self.set(cv2.CAP_PROP_EXPOSURE, exposure)
 
-    def toggle_auto_exposure(self, auto=0):
+    def toggle_auto_exposure(self, auto):
         return self.set(cv2.CAP_PROP_AUTO_EXPOSURE, auto)
 
     def resize(self, x_factor, y_factor):

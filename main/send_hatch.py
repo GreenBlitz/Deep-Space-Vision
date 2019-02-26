@@ -5,6 +5,7 @@ from models import *
 def init_send_hatch(camera, conn):
     conn.set('led_f', True)
     conn.set('led_b', True)
+    camera.toggle_auto_exposure(0.25, foreach=True)
     camera.set_exposure(0, foreach=True)
 
 
@@ -17,11 +18,7 @@ def send_hatch(camera, conn):
     hatches = list(find_hatch(frame, camera))
 
     if len(hatches) > 0:
-        print('found hatch')
         closest_hatch = hatches[0]
-        conn.set('x', closest_hatch[0])
-        conn.set('y', closest_hatch[1])
-        conn.set('z', closest_hatch[2])
-        conn.set('angle', closest_hatch[3])
-    else:
-        print("No hatches were found!")
+        closest_hatch[0:3] = CAMERA_ROTATION_MATRIX.dot(closest_hatch[0:3])
+        print('closest hatch: %s' % str(closest_hatch))
+        conn.set('output', list(closest_hatch))

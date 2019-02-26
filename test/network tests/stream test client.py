@@ -4,11 +4,11 @@ from utils.net import *
 
 
 def main():
-    camera = StreamCamera(PORT, LIFECAM_3000, StreamClient(ip='192.168.1.39'))
+    camera = StreamCamera(0, LIFECAM_3000, StreamClient(ip='127.0.0.1', fx=1, fy=1))
     print(camera.im_height)
     print(camera.im_width)
     camera.toggle_stream(True)
-    camera.set_frame_size(0.4, 0.4)
+    camera.resize(0.4, 0.4)
     while True:
         ok, frame = camera.read()
 

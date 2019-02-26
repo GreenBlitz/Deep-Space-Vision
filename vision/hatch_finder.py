@@ -87,7 +87,7 @@ class HatchFinder(ObjectFinder):
             rot_matrix = np.array([[np.cos(angle), 0, np.sin(angle)],
                                    [0, 1, 0],
                                    [-np.sin(angle), 0, np.cos(angle)]])
-            all_hatches.append(t - rot_matrix.dot(self.__vector_distance))
+            all_hatches.append(np.concatenate((t - rot_matrix.dot(self.__vector_distance), np.array([-angle]))))
 
         for i, t in enumerate(right_targets_real):
             if len(right_targets_polys[i][1]) != 4:
@@ -115,6 +115,6 @@ class HatchFinder(ObjectFinder):
             rot_matrix = np.array([[np.cos(angle), 0, np.sin(angle)],
                                    [0, 1, 0],
                                    [-np.sin(angle), 0, np.cos(angle)]])
-            all_hatches.append(t + rot_matrix.dot(self.__vector_distance))
+            all_hatches.append(np.concatenate((t + rot_matrix.dot(self.__vector_distance), np.array([-angle]))))
         all_hatches.sort(key=lambda v: np.linalg.norm(v))
         return all_hatches

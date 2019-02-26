@@ -22,6 +22,8 @@ class StreamCamera(Camera):
 
     def read(self, image=None):
         ok, frame = Camera.read(self, image)
+        if not ok:
+            return ok, frame
         if self.should_stream and ok:
             self.stream_client.send_frame(frame)
         return ok, cv2.resize(frame, (int(self.im_width), int(self.im_height)))

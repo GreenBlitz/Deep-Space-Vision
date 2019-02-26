@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from models import PORT
 
-from genetic_threshold import find_optimized_parameters, prep_image
+from tools.genetic_threshold import find_optimized_parameters, prep_image
 
 
 def threshold(frame, params):
@@ -17,23 +17,23 @@ def main():
     boxes = []
     video = cv2.VideoCapture(PORT)
     video.set(cv2.CAP_PROP_EXPOSURE, -6)
-    src_path = raw_input("enter path to file (stop to exit): ")
+    src_path = input("enter path to file (stop to exit): ")
     if src_path != "stop":
-        src_fix_path = raw_input("enter path to fixed file: ")
+        src_fix_path = input("enter path to fixed file: ")
     else:
         src_fix_path = ""  # suppress warning
     while src_path != "stop" and src_fix_path != "stop":
         src.append(cv2.imread(src_path))
         boxes.append(prep_image(cv2.imread(src_fix_path)))
-        src_path = raw_input("enter path to file(stop to exit): ")
+        src_path = input("enter path to file(stop to exit): ")
         if src_path != "stop":
-            src_fix_path = raw_input("enter path to fixed file: ")
+            src_fix_path = input("enter path to fixed file: ")
     params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2),
                                                c_factor=5, alpha=5, survivors_size=20,
                                                gen_size=1000, gen_random=100, max_iter=15,
                                                range_regulator=np.array([0.1, 0.4, 0.4]))
     plt.plot(np.arange(len(scores)), scores)
-    print(map(list, params.astype(int)))
+    print(list(map(list, params.astype(int))))
     plt.show()
     while True:
         cv2.imshow('original', src[0])

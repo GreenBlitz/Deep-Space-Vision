@@ -2,7 +2,7 @@ import utils.net as cvnet
 
 
 def main():
-    vision_conn = cvnet.net_init(table_name='VisionTable')
+    vision_conn = cvnet.TableConn(table_name='VisionTable')
 
     vision_conn.set("NTT", 666.0)
 
