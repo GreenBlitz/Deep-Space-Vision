@@ -3,7 +3,7 @@ from utils import *
 
 
 def main():
-    camera = Camera(PORT, LIFECAM_3000)
+    camera = Camera(1, LIFECAM_3000)
 
     time = 0
     #camera.toggle_auto_exposure(1)

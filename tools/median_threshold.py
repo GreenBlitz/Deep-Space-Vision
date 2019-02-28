@@ -3,7 +3,7 @@ from utils import *
 
 
 def threshold(frame, params):
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2LUV)
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     red, green, blue = params
     return cv2.inRange(frame, (int(red[0]), int(green[0]), int(blue[0])), (int(red[1]), int(green[1]), int(blue[1])))
 
@@ -11,7 +11,7 @@ def threshold(frame, params):
 def main():
     src = []
     boxes = []
-    video = Camera(PORT, CameraData(0, 0))
+    video = Camera(0, CameraData(0, 0))
     video.toggle_auto_exposure(0.25)
     video.set_exposure(-5)
     # video.resize(0.4, 0.4)
@@ -23,12 +23,11 @@ def main():
         k = cv2.waitKey(1) & 0xFF
         if k == ord('r'):
             bbox = cv2.selectROI('window', frame)
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2LUV)
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
             ftag = frame[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2]]
             med = np.median(ftag, axis=(0, 1)).astype(int)
-            stdv = 30
-            params = np.vectorize(lambda x: min(255, max(0, x)))(np.array(
-                [[med[0] - stdv, med[0] + stdv], [med[1] - stdv, med[1] + stdv], [med[2] - stdv, med[2] + stdv]]))
+            stdv = np.array([5, 30, 30])
+            params = np.vectorize(lambda x: min(255, max(0, x)))(np.array([med - stdv, med + stdv])).T
             break
         if k == ord('c'):
             break
