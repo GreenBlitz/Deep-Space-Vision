@@ -5,15 +5,11 @@ import pickle
 import struct
 import cv2
 
-MAX_UDP_MESSAGE_LENGTH = 40000
-
 
 class StreamServer:
     def __init__(self, ip='0.0.0.0', port=STREAM_PORT, fx=1, fy=1):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((ip, port))
-        # self.socket.listen(10)
-        # self.socket, addr = self.socket.accept()
         self.payload_size = struct.calcsize("I")
         self.data = b''
         self.fx = fx
