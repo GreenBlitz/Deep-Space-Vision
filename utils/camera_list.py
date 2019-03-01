@@ -99,6 +99,13 @@ class CameraList:
         else:
             self.camera.resize(x_factor, y_factor)
 
+    def rescale(self, factor, foreach=False):
+        if foreach:
+            for i in self.cameras:
+                self.cameras[i].rescale(factor)
+        else:
+            self.camera.resize(factor)
+
     def set_frame_size(self, width, height, foreach=False):
         if foreach:
             for i in self.cameras:
@@ -122,3 +129,10 @@ class CameraList:
     @property
     def height(self):
         return self.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
+    def rotate(self, cv_angle, foreach=False):
+        if foreach:
+            for i in self.cameras:
+                self.cameras[i].rotate(cv_angle)
+        else:
+            self.camera.rotate(cv_angle)

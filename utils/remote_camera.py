@@ -3,7 +3,7 @@ from .net.net_consts import NETWORK_TABLES_IP
 
 
 class RemoteCamera:
-    def __init__(self, stream_server, cam_index, network_table_ip=NETWORK_TABLES_IP):
+    def __init__(self, cam_index, stream_server, network_table_ip=NETWORK_TABLES_IP):
         self.server = stream_server
         self.table = TableConn(ip=network_table_ip, table_name='camera-%d' % cam_index)
         self.keys_loaded = {}

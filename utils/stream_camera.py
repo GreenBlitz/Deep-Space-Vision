@@ -43,6 +43,11 @@ class StreamCamera(Camera):
         self.im_height = self.im_height * y_factor
         self.data.constant *= np.sqrt(x_factor*y_factor)
 
+    def rescale(self, factor):
+        self.im_width = self.im_width * factor
+        self.im_height = self.im_height * factor
+        self.data.constant *= factor
+
     def set_frame_size(self, width, height):
         self.im_width = width
         self.im_height = height

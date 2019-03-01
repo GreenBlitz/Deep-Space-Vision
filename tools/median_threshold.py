@@ -11,7 +11,7 @@ def threshold(frame, params):
 def main():
     src = []
     boxes = []
-    video = Camera(PORT, CameraData(0, 0))
+    video = Camera(0, CameraData(0, 0))
     video.toggle_auto_exposure(0.25)
     video.set_exposure(-5)
     # video.resize(0.4, 0.4)
@@ -26,14 +26,14 @@ def main():
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2LUV)
             ftag = frame[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2]]
             med = np.median(ftag, axis=(0, 1)).astype(int)
-            stdv = 30
-            params = np.vectorize(lambda x: min(255, max(0, x)))(np.array(
-                [[med[0] - stdv, med[0] + stdv], [med[1] - stdv, med[1] + stdv], [med[2] - stdv, med[2] + stdv]]))
+            stdv = np.array([10, 40, 40])
+            params = np.vectorize(lambda x: min(255, max(0, x)))(np.array([med - stdv, med + stdv])).T
             break
         if k == ord('c'):
             break
     cv2.destroyAllWindows()
     print(list(map(list, params)))
+
     while True:
         ok, frame = video.read()
         if not ok:

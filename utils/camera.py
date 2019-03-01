@@ -21,6 +21,7 @@ class Camera(cv2.VideoCapture):
         cv2.VideoCapture.__init__(self, port)
         self.data = deepcopy(data)
         self.port = port
+        self.rotation_angle = None
 
     def set_exposure(self, exposure):
         return self.set(cv2.CAP_PROP_EXPOSURE, exposure)
@@ -33,10 +34,24 @@ class Camera(cv2.VideoCapture):
         self.set(cv2.CAP_PROP_FRAME_HEIGHT, self.get(cv2.CAP_PROP_FRAME_HEIGHT) * y_factor)
         self.data.constant *= np.sqrt(x_factor * y_factor)
 
+    def rescale(self, factor):
+        self.set(cv2.CAP_PROP_FRAME_WIDTH, self.get(cv2.CAP_PROP_FRAME_WIDTH) * factor)
+        self.set(cv2.CAP_PROP_FRAME_HEIGHT, self.get(cv2.CAP_PROP_FRAME_HEIGHT) * factor)
+        self.data.constant *= factor
+
     def set_frame_size(self, width, height):
         self.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
         self.data.constant = np.sqrt(width * height)
+
+    def read(self, image=None):
+        ok, frame = cv2.VideoCapture.read(self)
+        if self.rotation_angle is not None:
+            frame = cv2.rotate(frame, self.rotation_angle)
+        return ok, frame
+
+    def rotate(self, cv_angle):
+        self.rotation_angle = cv_angle
 
     @property
     def view_range(self): return self.data.view_range

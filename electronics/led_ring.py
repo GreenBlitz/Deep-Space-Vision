@@ -1,5 +1,6 @@
 from .pgio_device import PGIODevice
 
+
 class LedRing(PGIODevice):
     def on(self):
         self.set_power(255)

@@ -4,7 +4,8 @@ from utils.net import *
 
 
 def main():
-    camera = StreamCamera(0, LIFECAM_3000, StreamClient(ip='127.0.0.1', fx=1, fy=1))
+    camera = StreamCamera(0, LIFECAM_3000,
+                          StreamClient(ip='10.45.90.60', port=5801, fx=0.5, fy=0.5, max_fps=24, use_grayscale=False))
     print(camera.im_height)
     print(camera.im_width)
     camera.toggle_stream(True)

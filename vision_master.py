@@ -14,27 +14,25 @@ def cam_change_callback(cam, cameras):
 def main():
     print("starting vision master")
     print("initializing connection to stream server")
-    stream_client_main = StreamClient(ip='10.45.90.193', port=5801)
+    stream_client_main = StreamClient(ip='10.45.90.193', port=5801, fx=0.4, fy=0.4, use_grayscale=True, max_fps=20)
     cameras = CameraList([
-        StreamCamera(FRONT_LEFT_CAM_PORT, LIFECAM_3000, stream_client_main, should_stream=True),
-        StreamCamera(FRONT_RIGHT_CAM_PORT, LIFECAM_3000, stream_client_main, should_stream=True)
+        StreamCamera(FRONT_LEFT_CAM_PORT, LIFECAM_3000, stream_client_main, should_stream=True)
+        # StreamCamera(FRONT_RIGHT_CAM_PORT, LIFECAM_3000, stream_client_main, should_stream=True)
     ])
 
     conn = TableConn(ip='10.45.90.2')
 
-    conn.add_entry_change_listener(lambda cam: cam_change_callback(int(cam), cameras), 'camera')
-    conn.add_entry_change_listener(lambda should_stream: cameras[0].toggle_stream(should_stream), 'stream_cam_front')
-    conn.add_entry_change_listener(lambda should_stream: cameras[1].toggle_stream(should_stream), 'stream_cam_back')
+    # conn.add_entry_change_listener(lambda cam: cam_change_callback(int(cam), cameras), 'camera')
+    # conn.add_entry_change_listener(lambda should_stream: cameras[0].toggle_stream(should_stream), 'stream_cam_front')
+    # conn.add_entry_change_listener(lambda should_stream: cameras[1].toggle_stream(should_stream), 'stream_cam_back')
 
     print("setting camera auto exposure to false")
 
-    conn.set('algorithm', 'send_stream')
+    conn.set('algorithm', 'send_hatch')
     prev_algo = None
     while True:
-        print('iterating...')
         algo = conn.get('algorithm')
-        print(algo)
-        # cameras[stream_ports[1]].read() TODO why isn't this working >:O
+        print("algorithm: %s" % algo)
         if algo == 'send_cargo':
             if algo != prev_algo:
                 init_send_cargo(cameras, conn)
