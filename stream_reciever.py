@@ -1,4 +1,4 @@
-from utils.net import *
+from utils.net import StreamClient, cv2
 
 
 def main():
