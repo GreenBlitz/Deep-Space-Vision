@@ -1,8 +1,8 @@
-from utils.net import *
-from utils import *
-from models import *
-import time
 import pickle
+import time
+
+from models import *
+from utils import *
 
 
 def main():

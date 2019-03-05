@@ -6,7 +6,7 @@ class StreamCamera(Camera):
     a camera with an option to stream the image it reads
     """
 
-    def __init__(self, port, data, stream_client, should_stream=False):
+    def __init__(self, port, data, stream_server, should_stream=False):
         """
 
         :param port: the camera port (see Camera constructor)
@@ -15,7 +15,7 @@ class StreamCamera(Camera):
         :param should_stream:
         """
         Camera.__init__(self, port, data)
-        self.stream_client = stream_client
+        self.stream_server = stream_server
         self.should_stream = should_stream
         self.im_width = cv2.VideoCapture.get(self, cv2.CAP_PROP_FRAME_WIDTH)
         self.im_height = cv2.VideoCapture.get(self, cv2.CAP_PROP_FRAME_HEIGHT)
@@ -25,7 +25,7 @@ class StreamCamera(Camera):
         if not ok:
             return ok, frame
         if self.should_stream and ok:
-            self.stream_client.send_frame(frame)
+            self.stream_server.send_frame(frame)
         return ok, cv2.resize(frame, (int(self.im_width), int(self.im_height)))
 
     def toggle_stream(self, should_stream=False):
