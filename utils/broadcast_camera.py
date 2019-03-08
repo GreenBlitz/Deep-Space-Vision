@@ -41,22 +41,22 @@ class BroadcastCamera(StreamCamera):
         self.table.set('ret_set', ret)
 
     def remote_resize_x(self, f_x):
-        self.stream_client.fx *= f_x
+        self.stream_server.fx *= f_x
         self.resize(f_x, 1)
         self.remote_sync()
 
     def remote_resize_y(self, f_y):
-        self.stream_client.fy *= f_y
+        self.stream_server.fy *= f_y
         self.resize(1, f_y)
         self.remote_sync()
 
     def remote_set_frame_width(self, width):
-        self.stream_client.fx = width / Camera.get(self, cv2.CAP_PROP_FRAME_WIDTH)
+        self.stream_server.fx = width / Camera.get(self, cv2.CAP_PROP_FRAME_WIDTH)
         self.set_frame_size(width, self.height)
         self.remote_sync()
 
     def remote_set_frame_height(self, height):
-        self.stream_client.fy = height / Camera.get(self, cv2.CAP_PROP_FRAME_HEIGHT)
+        self.stream_server.fy = height / Camera.get(self, cv2.CAP_PROP_FRAME_HEIGHT)
         self.resize(self.width, height)
         self.remote_sync()
 

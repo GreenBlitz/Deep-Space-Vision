@@ -2,7 +2,9 @@ from exceptions import *
 from models import *
 
 
-def init_send_hatch_panel(camera, conn):
+def init_send_hatch_panel(camera, conn, leds):
+    leds.off()
+    camera.toggle_stream(True, foreach=True)
     camera.toggle_auto_exposure(0.25, foreach=True)
     camera.set_exposure(1, foreach=True)
 

@@ -1,19 +1,18 @@
+from utils import *
+from models import *
 from utils.net import *
-
-HOST = '0.0.0.0'
-PORT = 8089
 
 
 def main():
-    server1 = StreamServer(ip='0.0.0.0', port=5801, fx=1/0.5, fy=1/0.5)
+    camera = StreamCamera(0, LIFECAM_3000, StreamServer(ip='0.0.0.0', port=5801, fx=1, fy=1))
+    print(camera.im_height)
+    print(camera.im_width)
+    camera.toggle_stream(True)
+    camera.resize(0.4, 0.4)
     while True:
-        frame1 = server1.get_frame()
-        if frame1 is not None:
-            cv2.imshow('stream1', frame1)
-        if cv2.waitKey(1) & 0xFF == ord('c'):
-            cv2.destroyAllWindows()
-            break
+        ok, frame = camera.read()
 
 
 if __name__ == '__main__':
     main()
+

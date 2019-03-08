@@ -54,5 +54,36 @@ def main():
             break
 
 
+def get_params(video=Camera(PORT, None)):
+    src = []
+    boxes = []
+    video.set_exposure(-6)
+    while True:
+        ok, frame = video.read()
+        cv2.imshow('window', frame)
+
+        k = cv2.waitKey(1) & 0xFF
+        if k == ord('r'):
+            bbox = cv2.selectROI('window', frame)
+            ft = np.zeros(frame.shape[:-1])
+            ft[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2]] = 1
+            s = ft.mean()
+            ft = np.vectorize(lambda x: -1 if x == 0 else (1 - s) / s)(ft)
+            boxes.append(ft)
+            src.append(frame)
+        if k == ord('c'):
+            cv2.destroyAllWindows()
+            break
+    params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2),
+                                               c_factor=5, alpha=5, survivors_size=20,
+                                               gen_size=1000, gen_random=100, max_iter=10,
+                                               range_regulator=np.array([0.02, 0.1, 0.1]))
+    plt.plot(np.arange(len(scores)), scores)
+    print(list(map(list, params.astype(int))))
+    plt.show()
+
+    return params
+
+
 if __name__ == '__main__':
     main()
