@@ -147,22 +147,3 @@ class Threshold:
     def __call__(self, frame):
         return THRESHOLD_NAME_TABLE[self.type](frame, self.init)
 
-
-class DoubleThreshold:
-    def __init__(self, lst1, lst2, t1, t2):
-        assert t1.upper() in THRESHOLD_NAME_TABLE and t2.upper() in THRESHOLD_NAME_TABLE
-
-        self.init1 = lst1
-        self.init2 = lst2
-        self.type1 = t1.upper()
-        self.type2 = t2.upper()
-
-    def __len__(self):
-        return len(self.init)
-
-    def __getitem__(self, item):
-        return self.init[item]
-
-    def __call__(self, frame):
-        return np.bitwise_or(THRESHOLD_NAME_TABLE[self.type1](frame, self.init1),
-                             THRESHOLD_NAME_TABLE[self.type2](frame, self.init2))
