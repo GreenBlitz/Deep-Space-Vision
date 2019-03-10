@@ -6,7 +6,7 @@ current_threshold = threshold_vision_target
 
 
 def main():
-    camera = StreamServer(port=5801)
+    camera = StreamClient("10.45.90.8", port=5801)
     while True:
         frame = camera.get_frame()
         cv2.imshow("feed", frame)
