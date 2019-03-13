@@ -15,12 +15,8 @@ class CameraList:
         you can also add and remove cameras later using the
         :param select_cam: optional, an initial camera to be selected
         """
-        self.cameras = {}
-        if select_cam is None and len(cameras) > 0:
-            select_cam = cameras[0].port
-        for i in cameras:
-            self.cameras[i.port] = i
-        self.camera = self.cameras[select_cam] if select_cam in self.cameras else None
+        self.cameras = cameras[:]
+        self.camera = self.cameras[select_cam] if select_cam is not None else None
 
     def __getitem__(self, item):
         return self.cameras[item]
@@ -35,44 +31,44 @@ class CameraList:
 
     def read(self, foreach=False):
         if foreach:
-            return {port: self[port].read()[1] for port in self.cameras}
+            return [cam.read() for cam in self.cameras]
         return self.camera.read()
 
     def add_camera(self, cam):
-        self.camera[cam.port] = cam
+        self.camera.append(cam)
 
-    def release(self):
-        del self.cameras[self.camera.port]
-        self.camera = None
-
-    def __del__(self):
-        for cap in self.cameras.values():
-            cap.release()
+    def release(self, foreach=False):
+        if foreach:
+            for cam in self.cameras:
+                cam.release()
+        else:
+            self.camera.release()
+            self.camera = None
 
     def default(self):
-        self.camera = self.cameras[list(self.cameras.keys())[0]]
+        self.camera = self.cameras[list(self.cameras)[0]]
 
     def get(self, arg, foreach=False):
         if foreach:
-            return {port: self[port].get(arg) for port in self.cameras}
+            return [cam.get(arg) for cam in self.cameras]
         return self.camera.get(arg)
 
     def set(self, prop_id, value, foreach=False):
         if foreach:
-            return {port: self[port].set(prop_id, value) for port in self.cameras}
+            return [cam.set(prop_id, value) for cam in self.cameras]
         return self.camera.set(prop_id, value)
 
     def set_exposure(self, exposure, foreach=False):
         if foreach:
-            for i in self.cameras:
-                self.cameras[i].set_exposure(exposure)
+            for cam in self.cameras:
+                cam.set_exposure(exposure)
         else:
             return self.camera.set_exposure(exposure)
 
     def toggle_auto_exposure(self, auto, foreach=False):
         if foreach:
-            for i in self.cameras:
-                self.cameras[i].toggle_auto_exposure(auto)
+            for cam in self.cameras:
+                cam.toggle_auto_exposure(auto)
         else:
             return self.camera.toggle_auto_exposure(auto)
 
@@ -94,30 +90,30 @@ class CameraList:
 
     def resize(self, x_factor, y_factor, foreach=False):
         if foreach:
-            for i in self.cameras:
-                self.cameras[i].resize(x_factor, y_factor)
+            for cam in self.cameras:
+                cam.resize(x_factor, y_factor)
         else:
             self.camera.resize(x_factor, y_factor)
 
     def rescale(self, factor, foreach=False):
         if foreach:
-            for i in self.cameras:
-                self.cameras[i].rescale(factor)
+            for cam in self.cameras:
+                cam.rescale(factor)
         else:
             self.camera.resize(factor)
 
     def set_frame_size(self, width, height, foreach=False):
         if foreach:
-            for i in self.cameras:
-                self.cameras[i].set_frame_size(width, height)
+            for cam in self.cameras:
+                cam.set_frame_size(width, height)
         else:
             self.camera.set_frame_size(width, height)
 
     def toggle_stream(self, should_stream, foreach=False):
         if foreach:
-            for i in self.cameras:
-                if isinstance(self.cameras[i], StreamCamera):
-                    self.cameras[i].toggle_stream(should_stream)
+            for cam in self.cameras:
+                if isinstance(cam, StreamCamera):
+                    cam.toggle_stream(should_stream)
         else:
             if isinstance(self.camera, StreamCamera):
                 self.camera.toggle_stream(should_stream)

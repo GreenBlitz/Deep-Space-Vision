@@ -1,8 +1,8 @@
-from utils.net import StreamClient, cv2
+from utils.net import TCPStreamClient, cv2
 
 
 def main():
-    client = StreamClient(ip='10.45.90.8', port=5801, fx=2, fy=2)
+    client = TCPStreamClient(ip='10.45.90.8', port=5801, fx=2, fy=2)
     while True:
         frame = client.get_frame()
         if frame is not None:

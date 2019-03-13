@@ -6,10 +6,10 @@ current_threshold = threshold_vision_target
 
 
 def main():
-    camera = StreamClient("10.45.90.8", port=5801)
+    camera = TCPStreamClient("10.45.90.8", port=5801)
     while True:
         frame = camera.get_frame()
-        cv2.imshow("feed", frame)
+        cv2.imshow("stream", frame)
         cv2.imshow("threshold", current_threshold(frame))
         k = cv2.waitKey(1) & 0xFF
         if k == ord('c') or k == ord('C'):

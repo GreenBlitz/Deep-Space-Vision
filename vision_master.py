@@ -15,7 +15,7 @@ def cam_change_callback(cam, cameras):
 def main():
     print("starting vision master")
     print("initializing connection to stream server")
-    stream_server_main = StreamServer(ip='0.0.0.0', port=5801, fx=0.3, fy=0.3, max_fps=24, use_grayscale=False)
+    stream_server_main = TCPStreamServer(ip='0.0.0.0', port=5801, fx=0.3, fy=0.3, max_fps=24, use_grayscale=False)
     cameras = CameraList([
         StreamCamera(FRONT_LEFT_CAM_PORT, LIFECAM_3000, stream_server_main, should_stream=True)
     ])

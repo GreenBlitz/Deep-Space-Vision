@@ -7,12 +7,10 @@ import cv2
 import time
 
 
-class StreamServer:
+class UDPStreamServer:
     def __init__(self, ip='0.0.0.0', port=STREAM_PORT, fx=1, fy=1, im_encode='.jpg', use_grayscale=False, max_fps=None):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.bind((ip, port))
-        self.socket.listen(10)
-        self.socket, addr = self.socket.accept()
+        self.server_addr = (ip, port)
         self.payload_size = struct.calcsize("I")
         self.use_grayscale = use_grayscale
         self.im_encode = im_encode
@@ -32,5 +30,5 @@ class StreamServer:
             frame = cv2.imencode(self.im_encode, frame)[1]
         data = pickle.dumps(frame)
         data = struct.pack("I", len(data)) + data
-        self.socket.send(data)  # to(data, self.server_addr)
+        self.socket.sendto(data, self.server_addr)  # to(data, self.server_addr)
         self.prev_time = time.time()

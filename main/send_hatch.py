@@ -21,4 +21,5 @@ def send_hatch(camera, conn):
         closest_hatch = hatches[0]
         closest_hatch[0:3] = CAMERA_ROTATION_MATRIX.dot(closest_hatch[0:3])
         print('closest hatch: %s' % str(closest_hatch))
-        conn.set('output', list(closest_hatch))
+        #conn.set('output', list(closest_hatch))
+        conn.set('output', hatches)

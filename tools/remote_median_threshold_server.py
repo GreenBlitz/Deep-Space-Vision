@@ -9,7 +9,7 @@ def threshold(frame, params):
 
 
 def main():
-    server = StreamClient(ip='10.45.90.8', port=5801)
+    server = TCPStreamClient(ip='10.45.90.8', port=5801, fx=2, fy=2)
     while True:
         frame = server.get_frame()
         cv2.imshow('window', frame)
@@ -20,7 +20,7 @@ def main():
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
             ftag = frame[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2]]
             med = np.median(ftag, axis=(0, 1)).astype(int)
-            stdv = np.array([5, 30, 30])
+            stdv = np.array([10, 40, 40])
             params = np.vectorize(lambda x: min(255, max(0, x)))(np.array([med - stdv, med + stdv])).T
             break
         if k == ord('c'):

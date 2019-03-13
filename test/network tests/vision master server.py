@@ -5,7 +5,7 @@ from utils.net import *
 
 def main():
     conn = TableConn()
-    server = StreamServer()
+    server = TCPStreamServer()
     while True:
         frame = server.get_frame()
         cv2.imshow('stream', frame)

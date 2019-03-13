@@ -6,8 +6,8 @@ PORT = 8089
 
 
 def main():
-    server = StreamServer(ip='0.0.0.0', port=5802, fx=1, fy=1)
-    camera = RemoteCamera(server, cam_index=0, network_table_ip='10.45.90.2')
+    server = TCPStreamServer(ip='0.0.0.0', port=5802, fx=1, fy=1)
+    camera = RemoteCamera(cam_index=0, stream_server=server, network_table_ip='10.45.90.2')
     camera.toggle_stream(True)
     camera.set_frame_size(100, 100)
     while True:

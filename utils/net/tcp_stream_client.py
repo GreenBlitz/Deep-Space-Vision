@@ -6,7 +6,7 @@ import struct
 import time
 
 
-class StreamClient:
+class TCPStreamClient:
     def __init__(self, ip=STREAM_IP, port=STREAM_PORT, fx=1, fy=1):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_addr = (ip, port)

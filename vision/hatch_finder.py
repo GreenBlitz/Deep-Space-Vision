@@ -116,5 +116,5 @@ class HatchFinder(ObjectFinder):
                                    [0, 1, 0],
                                    [-np.sin(angle), 0, np.cos(angle)]])
             all_hatches.append(np.concatenate((t + rot_matrix.dot(self.__vector_distance), np.array([-angle]))))
-        all_hatches.sort(key=lambda v: np.linalg.norm(v[:3]))
+        all_hatches.sort(key=lambda v: np.linalg.norm(v[0:3:2]), reverse=False)
         return all_hatches

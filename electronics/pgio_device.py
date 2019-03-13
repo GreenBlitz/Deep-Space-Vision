@@ -10,5 +10,5 @@ class PGIODevice:
         self.port = port
 
     def set_power(self, power):
-        self.pi.set_PWM_dutycycle(self.pi, power)
+        self.pi.set_PWM_dutycycle(self.port, power)
         pass

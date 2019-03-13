@@ -15,7 +15,7 @@ def main():
     src = []
     boxes = []
     video = Camera(PORT, None)
-    video.set_exposure(-6)
+    video.set_exposure(-12)
     while True:
         ok, frame = video.read()
         cv2.imshow('window', frame)

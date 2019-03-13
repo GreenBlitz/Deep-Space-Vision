@@ -24,7 +24,10 @@ threshold_hatch_panel = PipeLine(HATCH_PANEL_THRESHOLD,
                                  lambda frame: cv2.erode(frame, np.ones((2, 2)), iterations=1),
                                  lambda frame: cv2.dilate(frame, np.ones((2, 2)), iterations=1))
 
-threshold_vision_target = PipeLine(VISION_TARGET_THRESHOLD)
+threshold_vision_target = PipeLine(VISION_TARGET_THRESHOLD,
+                                   # lambda frame: cv2.erode(frame, np.ones((2, 2)), iterations=1),
+                                   lambda frame: cv2.dilate(frame, np.ones((3, 3)), iterations=2),
+                                   lambda frame: cv2.erode(frame, np.ones((2, 2)), iterations=1))
 
 # lambda frame: cv2.erode(frame, np.ones((2, 2)), iterations=4),
 #                                 lambda frame: cv2.dilate(frame, np.ones((5, 5)), iterations=20),
@@ -35,7 +38,7 @@ find_contours = PipeLine(lambda frame: cv2.findContours(frame, cv2.RETR_TREE, cv
 
 sort_contours = PipeLine(lambda cnts: sorted(cnts, key=lambda x: cv2.contourArea(x), reverse=True))
 
-filter_contours = PipeLine((lambda cnts: filter(lambda c: cv2.contourArea(c) >= 3000.0, cnts))) + list
+filter_contours = PipeLine((lambda cnts: filter(lambda c: cv2.contourArea(c) >= 3.0, cnts))) + list
 
 contour_center = PipeLine(lambda cnt: cv2.moments(cnt),
                           lambda m: (int(m['m10'] / (m['m00'] + 0.0000001)), int(m['m01'] / (m['m00'] + 0.0000001))))
