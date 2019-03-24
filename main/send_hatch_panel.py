@@ -16,7 +16,7 @@ def send_hatch_panel(camera, conn):
         print(CouldNotReadFrameException("Kinda obvious... Could not read frame"))
         return
     hatches = list(find_hatch_panel(frame, camera))
-
+    conn.set('found', len(hatches) > 0)
     if len(hatches) > 0:
         closest_panel = CAMERA_ROTATION_MATRIX.dot(hatches[0])
         conn.set('output', list(closest_panel) + [0.0])

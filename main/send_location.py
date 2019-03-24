@@ -17,6 +17,8 @@ def send_location(camera, conn):
         return
     hatches = list(find_hatch(frame, camera))
 
+    conn.set('found', len(hatches) > 1)
+
     if len(hatches) > 1:
         print('found hatches')
         closest_hatch_1, closest_hatch_2 = hatches[:2]
