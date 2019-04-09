@@ -1,7 +1,8 @@
-import cv2
-import numpy as np
-from genetic_threshold import find_optimized_parameters
 import matplotlib.pyplot as plt
+from models import *
+from utils import *
+
+from tools.genetic_threshold import find_optimized_parameters
 
 
 def threshold(frame, params):
@@ -13,7 +14,8 @@ def threshold(frame, params):
 def main():
     src = []
     boxes = []
-    video = cv2.VideoCapture(0)
+    video = Camera(PORT, None)
+    video.set_exposure(-12)
     while True:
         ok, frame = video.read()
         cv2.imshow('window', frame)
@@ -22,10 +24,9 @@ def main():
         if k == ord('r'):
             bbox = cv2.selectROI('window', frame)
             ft = np.zeros(frame.shape[:-1])
-            ft[bbox[1]:bbox[1]+bbox[3], bbox[0]:bbox[0]+bbox[2]] = 1
+            ft[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2]] = 1
             s = ft.mean()
-            ft = np.vectorize(lambda x: -1 if x == 0 else (1-s)/s)(ft)
-            #print(np.sum(ft))
+            ft = np.vectorize(lambda x: -1 if x == 0 else (1 - s) / s)(ft)
             boxes.append(ft)
             src.append(frame)
         if k == ord('c'):
@@ -34,9 +35,9 @@ def main():
     params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2),
                                                c_factor=5, alpha=5, survivors_size=20,
                                                gen_size=1000, gen_random=100, max_iter=10,
-                                               range_regulator=np.array([0.05, 0.2, 0.2]))
+                                               range_regulator=np.array([0.02, 0.1, 0.1]))
     plt.plot(np.arange(len(scores)), scores)
-    print(map(list, params))
+    print(list(map(list, params.astype(int))))
     plt.show()
     while True:
         cv2.imshow('original', src[0])
@@ -51,6 +52,37 @@ def main():
         if cv2.waitKey(1) & 0xFF == ord('c'):
             cv2.destroyAllWindows()
             break
+
+
+def get_params(video=Camera(PORT, None)):
+    src = []
+    boxes = []
+    video.set_exposure(-6)
+    while True:
+        ok, frame = video.read()
+        cv2.imshow('window', frame)
+
+        k = cv2.waitKey(1) & 0xFF
+        if k == ord('r'):
+            bbox = cv2.selectROI('window', frame)
+            ft = np.zeros(frame.shape[:-1])
+            ft[bbox[1]:bbox[1] + bbox[3], bbox[0]:bbox[0] + bbox[2]] = 1
+            s = ft.mean()
+            ft = np.vectorize(lambda x: -1 if x == 0 else (1 - s) / s)(ft)
+            boxes.append(ft)
+            src.append(frame)
+        if k == ord('c'):
+            cv2.destroyAllWindows()
+            break
+    params, scores = find_optimized_parameters(threshold, src, boxes, (3, 2),
+                                               c_factor=5, alpha=5, survivors_size=20,
+                                               gen_size=1000, gen_random=100, max_iter=10,
+                                               range_regulator=np.array([0.02, 0.1, 0.1]))
+    plt.plot(np.arange(len(scores)), scores)
+    print(list(map(list, params.astype(int))))
+    plt.show()
+
+    return params
 
 
 if __name__ == '__main__':

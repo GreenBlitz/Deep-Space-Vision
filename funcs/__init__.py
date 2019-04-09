@@ -1,3 +1,4 @@
-from filter_inner_circles import filter_inner_circles
-from conv import *
-from func_tools import *
+from .conv import *
+from .filter_inner_circles import *
+from .func_tools import *
+from .filter_inner_rects import *

@@ -1,0 +1,3 @@
+scp -p 5809 plan_b_streamer.py pi@10.45.90.60:~/Python-Vision-2018-19
+
+sudo service lightdm stop

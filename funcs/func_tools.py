@@ -1,5 +1,4 @@
-
-def split_list(lst, f, amount=2):
+def split_list(f, lst, amount=2):
     """
     splits the list into several list according to the function f
     :param lst: the list to split
@@ -11,5 +10,5 @@ def split_list(lst, f, amount=2):
     """
     temp = tuple([] for _ in range(amount))
     for i in lst:
-         temp[f(i)].append(i)
+        temp[f(i)].append(i)
     return temp
